@@ -11,7 +11,7 @@
     <modules>
         <module>porsche-core</module>
         <module>porsche-console</module>
+        <module>porsche-m</module>
+        <module>porsche-s</module>
     </modules>
-
-
 </project>
