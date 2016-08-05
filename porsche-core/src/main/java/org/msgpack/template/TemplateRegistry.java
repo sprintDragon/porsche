@@ -17,6 +17,7 @@
 //
 package org.msgpack.template;
 
+import java.nio.charset.Charset;
 import java.util.*;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -111,8 +112,11 @@ public class TemplateRegistry {
         register(BigDecimal.class, BigDecimalTemplate.getInstance());
         register(Date.class, DateTemplate.getInstance());
         register(Class.class,ClassTemplate.getInstance());
+        register(Character[].class,CharacterArrayTemplate.getInstance());
+        register(char[].class,CharArrayTemplate.getInstance());
+        register(Calendar.class,CalendarTemplate.getInstance());
+        register(Charset.class,CharsetTemplate.getInstance());
         registerTemplatesWhichRefersRegistry();
-
     }
 
     protected void registerTemplatesWhichRefersRegistry() {

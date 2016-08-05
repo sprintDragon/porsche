@@ -1,4 +1,4 @@
-package org.sprintdragon;
+package org.msgpack.test;
 
 import org.msgpack.annotation.Message;
 

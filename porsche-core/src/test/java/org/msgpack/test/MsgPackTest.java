@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.msgpack.MessagePack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sprintdragon.UserInfo;
 import org.sprintdragon.ipc.Packet;
 
 import java.io.IOException;
