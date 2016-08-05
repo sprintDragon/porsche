@@ -23,6 +23,7 @@ public class MsgPackTest {
         map.put("1",new UserInfo());
         Packet demo = new Packet();
         demo.setResult(map);
+        demo.setReturnType(UserInfo.class);
         HashSet<Object> hashSet = new HashSet<Object>();
         hashSet.add("1");
         Object[] objects = {new UserInfo(),map,hashSet};
@@ -32,4 +33,5 @@ public class MsgPackTest {
         demo = messagePack.read(data,Packet.class);
         logger.info(demo.toString());
     }
+
 }

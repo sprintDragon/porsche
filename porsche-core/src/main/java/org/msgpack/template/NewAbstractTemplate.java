@@ -10,9 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Collection;
-import java.util.Iterator;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.*;
 
 /**
  * Created by stereo on 16-8-5.
@@ -47,8 +47,7 @@ public abstract class NewAbstractTemplate<T> extends AbstractTemplate<T> {
             try {
                 template = registry.lookup(valueClass);
             } catch(MessageTypeException e){
-                //CodecUtils.checkAndRegistryClass(valueClass, new HashSet<Class<?>>());
-                template = registry.lookup(valueClass);
+                throw e;
             }
             template.write(pk, v);
         } else {
@@ -81,8 +80,7 @@ public abstract class NewAbstractTemplate<T> extends AbstractTemplate<T> {
             try {
                 valTemplate = registry.lookup(valueClass);
             } catch (MessageTypeException e){
-                //CodecUtils.checkAndRegistryClass(valueClass, new HashSet<Class<?>>());
-                valTemplate = registry.lookup(valueClass);
+                throw e;
             } finally {
                 if(valTemplate != null){
                     if(TypeEnum.getIndex(valueClass) != null){

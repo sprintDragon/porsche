@@ -17,6 +17,8 @@
 //
 package org.msgpack.template;
 
+import java.net.URI;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.lang.reflect.GenericArrayType;
@@ -116,6 +118,10 @@ public class TemplateRegistry {
         register(char[].class,CharArrayTemplate.getInstance());
         register(Calendar.class,CalendarTemplate.getInstance());
         register(Charset.class,CharsetTemplate.getInstance());
+        register(java.sql.Date.class,SqlDateTemplate.getInstance());
+        register(URI.class,URITemplate.getInstance());
+        register(URL.class,URLTemplate.getInstance());
+        register(UUID.class,UUIDTemplate.getInstance());
         registerTemplatesWhichRefersRegistry();
     }
 
