@@ -31,7 +31,7 @@ public class Packet implements Serializable {
 
 	private Class<?> returnType;
 
-	private Exception exception;
+	private String exception;
 
 	public Packet() {
 	}
@@ -105,11 +105,11 @@ public class Packet implements Serializable {
 		this.result = result;
 	}
 
-	public Exception getException() {
+	public String getException() {
 		return exception;
 	}
 
-	public void setException(Exception exception) {
+	public void setException(String exception) {
 		this.exception = exception;
 	}
 
