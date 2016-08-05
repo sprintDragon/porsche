@@ -12,7 +12,7 @@ import java.util.Map;
  * @author 张俊峰
  *
  */
-public class MsgTypeEnum {
+public class TypeEnum {
     
 	private static Map<String, Class<?>> indexMap = new HashMap<String, Class<?>>();
 	
