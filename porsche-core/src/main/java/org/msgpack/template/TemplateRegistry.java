@@ -20,6 +20,8 @@ package org.msgpack.template;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.*;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -122,6 +124,9 @@ public class TemplateRegistry {
         register(URI.class,URITemplate.getInstance());
         register(URL.class,URLTemplate.getInstance());
         register(UUID.class,UUIDTemplate.getInstance());
+        register(Timestamp.class,TimestampTemplate.getInstance());
+        register(Time.class,TimeTemplate.getInstance());
+        register(TimeZone.class,TimeZoneTemplate.getInstance());
         registerTemplatesWhichRefersRegistry();
     }
 

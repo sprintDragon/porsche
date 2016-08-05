@@ -12,8 +12,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * JSF自定义Set序列化模板
- * @author 张俊峰
+ * 自定义Set序列化模板
+ * @author 摘子JD-JSF
  *
  * @param <E>
  */

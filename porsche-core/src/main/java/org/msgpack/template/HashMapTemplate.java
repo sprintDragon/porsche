@@ -12,10 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * JSF自定义map序列化模板类
- * 
+ *
  * 用于Map参数的序列化和反序列化
- * @author 张俊峰
+ * @author 摘子JD-JSF
  *
  * @param <K>
  * @param <V>

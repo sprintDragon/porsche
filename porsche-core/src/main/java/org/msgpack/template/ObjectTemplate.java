@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 /**
- * JSF自定义Object序列化模板
- * @author 张俊峰
+ * 自定义Object序列化模板
+ * @author 摘子JD-JSF
  *
  */
 public class ObjectTemplate extends NewAbstractTemplate<Object> {
