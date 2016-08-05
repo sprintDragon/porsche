@@ -40,7 +40,6 @@ import org.msgpack.template.FieldList;
 import org.msgpack.template.FieldOption;
 import org.msgpack.template.Template;
 import org.msgpack.template.TemplateRegistry;
-import org.msgpack.template.builder.TemplateBuildException;
 
 public abstract class AbstractTemplateBuilder implements TemplateBuilder {
 

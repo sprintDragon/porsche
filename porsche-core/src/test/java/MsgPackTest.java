@@ -1,6 +1,5 @@
 import org.junit.Test;
 import org.msgpack.MessagePack;
-import org.msgpack.template.HashSetTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sprintdragon.UserInfo;

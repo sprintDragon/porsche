@@ -114,7 +114,7 @@ public class TemplatePrecompiler {
         }
     }
 
-    public static void saveTemplateClass(TemplateRegistry registry, Class<?> targetClass) 
+    public static void saveTemplateClass(TemplateRegistry registry, Class<?> targetClass)
             throws IOException {
         LOG.info("Saving template of " + targetClass.getName() + "...");
         Properties props = System.getProperties();

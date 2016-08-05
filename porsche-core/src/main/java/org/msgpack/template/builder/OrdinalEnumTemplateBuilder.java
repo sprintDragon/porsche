@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 import org.msgpack.template.OrdinalEnumTemplate;
 import org.msgpack.template.Template;
 import org.msgpack.template.TemplateRegistry;
-import org.msgpack.template.builder.TemplateBuildException;
 
 public class OrdinalEnumTemplateBuilder extends AbstractTemplateBuilder {
 

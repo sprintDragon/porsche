@@ -18,7 +18,6 @@
 package org.msgpack.template.builder;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +78,7 @@ public class TemplateBuilderChain {
     }
 
     private static TemplateBuilder createForceTemplateBuilder(String className,
-            TemplateRegistry registry, ClassLoader cl) {
+                                                              TemplateRegistry registry, ClassLoader cl) {
         try {
             Class<?> c = (Class<?>) Class.forName(className);
             Constructor<?> cons = c.getConstructor(TemplateRegistry.class,
