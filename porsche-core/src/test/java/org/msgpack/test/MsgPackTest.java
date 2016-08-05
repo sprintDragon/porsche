@@ -89,7 +89,7 @@ public class MsgPackTest {
         //msgpack反序列化
         start = System.currentTimeMillis();
         packet = messagePack.read(data,Packet.class);
-        //System.out.println("msgpack反序列化后 data is " + packet);
+        System.out.println("msgpack反序列化后 data is " + packet);
         System.out.println("msgpack反序列化时间：" + (System.currentTimeMillis() - start));
 
         //hessian序列化
@@ -107,7 +107,7 @@ public class MsgPackTest {
         ByteArrayInputStream is = new ByteArrayInputStream(data);
         Hessian2Input hessian2Input = new Hessian2Input(is);
         packet = (Packet) hessian2Input.readObject();
-        //System.out.println("hessian反序列化后 data is " + packet);
+        System.out.println("hessian反序列化后 data is " + packet);
         System.out.println("hessian反序列化时间：" + (System.currentTimeMillis() - start));
     }
 }
