@@ -1,3 +1,5 @@
+package org.msgpack.test;
+
 import org.junit.Test;
 import org.msgpack.MessagePack;
 import org.slf4j.Logger;
