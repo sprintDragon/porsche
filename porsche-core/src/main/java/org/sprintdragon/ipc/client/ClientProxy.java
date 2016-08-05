@@ -2,8 +2,8 @@ package org.sprintdragon.ipc.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sprintdragon.service.AbstractService;
 import org.sprintdragon.ipc.Config;
+import org.sprintdragon.service.AbstractService;
 
 /**
  * Created by stereo on 16-8-4.
