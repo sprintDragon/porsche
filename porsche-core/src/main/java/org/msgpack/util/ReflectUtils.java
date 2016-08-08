@@ -1,7 +1,5 @@
 /**
  *  ReflectUtils.java Created on 2014-4-21 10:57
- *
- *  Copyright (c) 2014 by www.jd.com.
  */
 package org.msgpack.util;
 
@@ -33,9 +31,6 @@ import java.util.regex.Pattern;
  * <p/>
  * Description: 方法带缓存。部分方法是为了兼容dubbo使用<br>
  * <p/>
- * Company: <a href=www.jd.com>京东</a><br>
- *
- * @author <a href=mailto:zhanggeng@jd.com>章耿</a>
  */
 public class ReflectUtils {
 

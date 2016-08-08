@@ -13,8 +13,6 @@ import java.util.Set;
 
 /**
  * 自定义Set序列化模板
- * @author 摘子JD-JSF
- *
  * @param <E>
  */
 public class HashSetTemplate<E> extends NewAbstractTemplate<Set<E>> {

@@ -9,8 +9,6 @@ import java.io.IOException;
 
 /**
  * 自定义Object序列化模板
- * @author 摘子JD-JSF
- *
  */
 public class ObjectTemplate extends NewAbstractTemplate<Object> {
 	

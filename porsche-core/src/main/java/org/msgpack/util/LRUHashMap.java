@@ -1,7 +1,5 @@
 /**
  *  LRUHashMap.java Created on 2014/10/11 9:15
- *
- *  Copyright (c) 2014 by www.jd.com.
  */
 package org.msgpack.util;
 
@@ -14,9 +12,6 @@ import java.util.Map;
  * Description: 最后访问的元素在最后面。<br>
  * 如果要线程安全，请使用<pre>Collections.synchronizedMap(new LRUHashMap(123));</pre> <br>
  * <p/>
- * Company: <a href=www.jd.com>京东</a><br>
- *
- * @author <a href=mailto:zhanggeng@jd.com>章耿</a>
  */
 public class LRUHashMap<K, V> extends LinkedHashMap<K, V> {
 

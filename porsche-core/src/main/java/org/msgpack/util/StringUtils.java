@@ -25,9 +25,6 @@ import java.util.List;
  * <p/>
  * Description: 参考apache-commons-lang的类<br>
  * <p/>
- * Company: <a href=www.jd.com>京东</a><br>
- *
- * @author <a href=mailto:zhanggeng@jd.com>章耿</a>
  */
 public class StringUtils {
 

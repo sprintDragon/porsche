@@ -14,8 +14,6 @@ import java.util.Map;
 /**
  *
  * 用于Map参数的序列化和反序列化
- * @author 摘子JD-JSF
- *
  * @param <K>
  * @param <V>
  */

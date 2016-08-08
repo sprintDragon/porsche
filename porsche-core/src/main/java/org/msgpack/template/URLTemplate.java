@@ -1,7 +1,6 @@
 /**
  *  URLTemplate.java Created on 2015/1/30 10:11
  *
- *  Copyright (c) 2015 by www.jd.com.
  */
 package org.msgpack.template;
 

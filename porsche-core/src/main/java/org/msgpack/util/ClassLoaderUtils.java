@@ -1,7 +1,6 @@
 /**
  * ClassLoaderUtils.java Created on 2013年10月29日 上午9:33:01
  * <p/>
- * Copyright (c) 2013 by www.jd.com.
  */
 package org.msgpack.util;
 
@@ -15,9 +14,6 @@ import java.util.Set;
  *
  * Description: 封装了classloader获取，class.forName，newInstance操作，以后如果切换ClassLoader也无妨<br>
  *
- * Company: <a href=www.jd.com>京东</a><br>
- *
- * @author <a href=mailto:zhanggeng@jd.com>章耿</a>
  */
 public class ClassLoaderUtils {
 

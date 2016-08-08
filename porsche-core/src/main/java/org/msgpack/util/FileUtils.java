@@ -1,7 +1,5 @@
 /**
  *  FileUtils.java Created on 2014/8/4 13:48
- *
- *  Copyright (c) 2014 by www.jd.com.
  */
 package org.msgpack.util;
 
@@ -15,9 +13,6 @@ import java.io.*;
  * <p/>
  * Description: <br>
  * <p/>
- * Company: <a href=www.jd.com>京东</a><br>
- *
- * @author <a href=mailto:zhanggeng@jd.com>章耿</a>
  */
 public class FileUtils {
     

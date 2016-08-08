@@ -1,7 +1,5 @@
 /**
  *  JsonUtils.java Created on 2015/1/8 10:01
- *
- *  Copyright (c) 2015 by www.jd.com.
  */
 package org.msgpack.util;
 
@@ -12,9 +10,6 @@ import com.alibaba.fastjson.JSON;
  * <p/>
  * Description: <br>
  * <p/>
- * Company: <a href=www.jd.com>京东</a><br>
- *
- * @author <a href=mailto:zhanggeng@jd.com>章耿</a>
  */
 public class JsonUtils {
 

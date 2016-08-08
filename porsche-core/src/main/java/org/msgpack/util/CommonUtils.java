@@ -14,9 +14,6 @@ import java.util.concurrent.ConcurrentMap;
  * <p/>
  * Description: <br>
  * <p/>
- * Company: <a href=www.jd.com>京东</a><br>
- *
- * @author <a href=mailto:lixininfo@jd.com>李鑫</a>
  */
 public class CommonUtils {
 
@@ -293,7 +290,7 @@ public class CommonUtils {
      * @return 可用的cpu内核数
      */
     public static int getCpuCores() {
-        try { // 京东的docker机器特殊处理
+        try { // docker机器特殊处理
             //cat /etc/config_info
             // {"Config": {"Cpuset": "1,2", "Memory": 4294967296}, "host_ip": "10.8.65.251"}
             String s = FileUtils.file2String(new File("/etc/config_info"));
