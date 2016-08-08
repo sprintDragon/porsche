@@ -1,9 +1,34 @@
 package org.sprintdragon.ipc.client;
 
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.*;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollSocketChannel;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sprintdragon.ipc.Config;
+import org.sprintdragon.ipc.Packet;
+import org.sprintdragon.ipc.api.IActionCall;
+import org.sprintdragon.ipc.codec.MsgPackDecoder;
+import org.sprintdragon.ipc.codec.MsgPackEncoder;
+import org.sprintdragon.ipc.exc.ClientConnectException;
+import org.sprintdragon.ipc.exc.ClientTimeoutException;
+import org.sprintdragon.ipc.server.IpcServer;
+import org.sprintdragon.ipc.util.NetUtils;
+import org.sprintdragon.ipc.util.UUID;
 import org.sprintdragon.service.AbstractService;
+
+import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by stereo on 16-8-4.
@@ -14,24 +39,125 @@ public class ClientProxy extends AbstractService{
 
     private Config config;
 
-    public ClientProxy(Config config)
+    private Bootstrap bootstrap;
+
+    private EventLoopGroup group;
+
+    private Channel channel;
+
+    private final ClassLoader loader;
+
+    public ClientProxy(Config config){
+        this(config,Thread.currentThread().getContextClassLoader());
+    }
+
+    public ClientProxy(Config config ,ClassLoader  loader)
     {
         super("ClientProxy"+":"+config.getRemoteAddress().toString());
         this.config = config;
+        this.loader = loader;
     }
 
     @Override
-    public void serviceInit() throws Exception {
+    protected void serviceInit() throws Exception {
+        final SslContext sslCtx;
+        if (config.isSsl()) {
+            sslCtx = SslContextBuilder.forClient()
+                    .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+        } else {
+            sslCtx = null;
+        }
+
+        Class clazz;
+        if(config.isUseEpoll())
+        {
+            group = new EpollEventLoopGroup(config.getChildNioEventThreads());
+            clazz = EpollSocketChannel.class;
+        }
+
+        else {
+            group = new NioEventLoopGroup(config.getChildNioEventThreads());
+            clazz = NioSocketChannel.class;
+        }
+
+        bootstrap = new Bootstrap();
+        bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+        bootstrap.option(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, 32 * 1024);
+        bootstrap.option(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, 8 * 1024);
+        bootstrap.option(ChannelOption.SO_LINGER ,config.getSoLinger());
+        bootstrap.option(ChannelOption.RCVBUF_ALLOCATOR, AdaptiveRecvByteBufAllocator.DEFAULT);
+        bootstrap.group(group)
+                .channel(clazz)
+                .handler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    public void initChannel(SocketChannel ch) throws Exception {
+                        ChannelPipeline p = ch.pipeline();
+                        if (sslCtx != null) {
+                            p.addLast(sslCtx.newHandler(ch.alloc(), config.getHost(), config.getPort()));
+                        }
+                        p.addLast(
+                                new MsgPackEncoder(),
+                                new MsgPackDecoder(),
+                                new ClientHandler()
+                        );
+                    }
+                });
     }
 
     @Override
-    public void serviceStart() throws Exception {
+    protected void serviceStart() throws Exception {
+        if(bootstrap!=null)
+        {
+            ChannelFuture channelFuture = bootstrap.connect(config.getHost(),config.getPort()).sync();
+            channelFuture.awaitUninterruptibly(config.getConnectTimeout(), TimeUnit.MILLISECONDS);
+            if (channelFuture.isSuccess())
+            {
+                channel = channelFuture.channel();
+                if (NetUtils.toAddressString((InetSocketAddress) channel.remoteAddress())
+                        .equals(NetUtils.toAddressString((InetSocketAddress) channel.localAddress()))) {
+                    channel.close();
+                    throw new ClientConnectException("Failed to connect " + config.getHost() + ":" + config.getPort()
+                            + ". Cause by: Remote and local address are the same");
+                }
+            }else {
+                throw new ClientTimeoutException(channelFuture.cause());
+            }
+        }
     }
 
     @Override
-    public void serviceStop() throws Exception {
+    protected void serviceStop() throws Exception {
+        if(channel!=null && group != null)
+        {
+            channel.close().sync();
+            group.shutdownGracefully();
+            bootstrap = null;
+            group = null;
+            channel = null;
+        }
     }
 
-    public static void main(String[] args) {
+    private Packet packet(String serviceName, String method,
+                          Class<?> returnType, Object[] params) {
+        Packet packet = new Packet();
+        UUID uuid = new UUID();
+        uuid.setS_id(serviceName + "-" + method);
+        packet.setId(uuid.toString());
+        packet.setState(IActionCall.STATUS_PENDING);
+        packet.setMethod(method);
+        packet.setInterfaceName(serviceName);
+        packet.setParams(params);
+        packet.setReturnType(returnType);
+        return packet;
+    }
+
+    public static void main(String[] args) throws Exception {
+        ClientProxy clientProxy = new ClientProxy(new Config("127.0.0.1",10092));
+        clientProxy.init();
+        clientProxy.start();
+        System.out.println("ipc客户启动 5秒后关闭");
+        Thread.sleep(5000);
+        clientProxy.close();
+        System.out.println("ipc客户已经关闭");
     }
 }

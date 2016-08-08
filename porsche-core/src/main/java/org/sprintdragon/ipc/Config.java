@@ -1,21 +1,37 @@
 package org.sprintdragon.ipc;
 
+import org.sprintdragon.ipc.util.NetUtils;
+
 import java.net.InetSocketAddress;
 
 public class Config {
 	private int soLinger = -1;
-	private int connectTimeout = 10;
-	private int readTimeout = 30;
-	private int idleTimeout = 30;
+	private int connectTimeout = 5000;
+	private int readTimeout = 30 * 1000;
+	private int idleTimeout = 30 * 1000;
 	private int heartBeatRate = 15;
 	private int heartBeatTimeout = 10;
-	private int sendBufferSize = 256;
 	private boolean ssl = false;
 	private boolean tcpNoDelay = true;
 	private boolean reuseAddress = true;
-	private int receiveBufferSize = 1024;
+	private int sendBufferSize = 2 * 1024;
+	private int receiveBufferSize = 8 * 1024;
+	private boolean useEpoll = false;
+	private int childNioEventThreads = 6; //cpu+1
 	private InetSocketAddress remoteAddress = new InetSocketAddress(
-			"localhost", 8099);
+			"0.0.0.0", 8099);
+
+	public Config(int port){
+		this("0.0.0.0", port);
+	}
+
+	public Config(String hostname, int port){
+		if(NetUtils.isInvalidPort(port) || NetUtils.isInvalidHost(hostname))
+		{
+			throw new RuntimeException("hostname:" + hostname + " or port:"+port+" is Invalid");
+		}
+		remoteAddress = new InetSocketAddress(hostname,port);
+	}
 
 	public void setSsl(boolean ssl) {
 		this.ssl = ssl;
@@ -113,6 +129,30 @@ public class Config {
 		this.heartBeatTimeout = heartBeatTimeout;
 	}
 
+	public String getHost(){
+		return remoteAddress!=null ? remoteAddress.getHostName() : null;
+	}
+
+	public int getPort(){
+		return remoteAddress!=null ? remoteAddress.getPort() : -1;
+	}
+
+	public boolean isUseEpoll() {
+		return useEpoll;
+	}
+
+	public void setUseEpoll(boolean useEpoll) {
+		this.useEpoll = useEpoll;
+	}
+
+	public int getChildNioEventThreads() {
+		return childNioEventThreads;
+	}
+
+	public void setChildNioEventThreads(int childNioEventThreads) {
+		this.childNioEventThreads = childNioEventThreads;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -126,11 +166,13 @@ public class Config {
 		if (idleTimeout != config.idleTimeout) return false;
 		if (heartBeatRate != config.heartBeatRate) return false;
 		if (heartBeatTimeout != config.heartBeatTimeout) return false;
-		if (sendBufferSize != config.sendBufferSize) return false;
 		if (ssl != config.ssl) return false;
 		if (tcpNoDelay != config.tcpNoDelay) return false;
 		if (reuseAddress != config.reuseAddress) return false;
+		if (sendBufferSize != config.sendBufferSize) return false;
 		if (receiveBufferSize != config.receiveBufferSize) return false;
+		if (useEpoll != config.useEpoll) return false;
+		if (childNioEventThreads != config.childNioEventThreads) return false;
 		return remoteAddress != null ? remoteAddress.equals(config.remoteAddress) : config.remoteAddress == null;
 
 	}
@@ -143,11 +185,13 @@ public class Config {
 		result = 31 * result + idleTimeout;
 		result = 31 * result + heartBeatRate;
 		result = 31 * result + heartBeatTimeout;
-		result = 31 * result + sendBufferSize;
 		result = 31 * result + (ssl ? 1 : 0);
 		result = 31 * result + (tcpNoDelay ? 1 : 0);
 		result = 31 * result + (reuseAddress ? 1 : 0);
+		result = 31 * result + sendBufferSize;
 		result = 31 * result + receiveBufferSize;
+		result = 31 * result + (useEpoll ? 1 : 0);
+		result = 31 * result + childNioEventThreads;
 		result = 31 * result + (remoteAddress != null ? remoteAddress.hashCode() : 0);
 		return result;
 	}
@@ -161,11 +205,13 @@ public class Config {
 				", idleTimeout=" + idleTimeout +
 				", heartBeatRate=" + heartBeatRate +
 				", heartBeatTimeout=" + heartBeatTimeout +
-				", sendBufferSize=" + sendBufferSize +
 				", ssl=" + ssl +
 				", tcpNoDelay=" + tcpNoDelay +
 				", reuseAddress=" + reuseAddress +
+				", sendBufferSize=" + sendBufferSize +
 				", receiveBufferSize=" + receiveBufferSize +
+				", useEpoll=" + useEpoll +
+				", childNioEventThreads=" + childNioEventThreads +
 				", remoteAddress=" + remoteAddress +
 				'}';
 	}

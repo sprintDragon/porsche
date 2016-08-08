@@ -148,11 +148,11 @@ public abstract class AbstractService implements Service {
     stop();
   }
 
-  public abstract void serviceInit() throws Exception;
+  protected abstract void serviceInit() throws Exception;
 
-  public abstract void serviceStart() throws Exception;
+  protected abstract void serviceStart() throws Exception;
 
-  public abstract void serviceStop() throws Exception;
+  protected abstract void serviceStop() throws Exception;
 
   @Override
   public void registerServiceListener(ServiceStateChangeListener l) {
