@@ -20,8 +20,8 @@ public class TestAction extends Action implements ITestAction{
     public void handleNotification(INotification notification) {
     }
 
-    public int aaa(Bean bean){
+    public Bean aaa(Bean bean){
         LOG.info("TestAction.aaa " + bean);
-        return 0;
+        return bean;
     }
 }

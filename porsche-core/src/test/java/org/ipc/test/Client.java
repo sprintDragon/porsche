@@ -25,7 +25,7 @@ public class Client {
                         ITestAction testAction = clientProxy.create(ITestAction.class);
                         while (true)
                         {
-                            int rs = testAction.aaa(new Bean());
+                            Bean rs = testAction.aaa(new Bean());
                             System.out.println("结果=" + rs);
                             Thread.sleep(500);
                         }
