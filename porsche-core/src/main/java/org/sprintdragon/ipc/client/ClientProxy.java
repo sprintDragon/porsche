@@ -7,35 +7,35 @@ import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.serialization.ClassResolvers;
-import io.netty.handler.codec.serialization.ObjectDecoder;
-import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sprintdragon.ipc.Config;
-import org.sprintdragon.ipc.Packet;
-import org.sprintdragon.ipc.api.IActionCall;
+import org.sprintdragon.ipc.api.IAction;
+import org.sprintdragon.ipc.api.IFunction;
+import org.sprintdragon.ipc.api.INotification;
 import org.sprintdragon.ipc.codec.MsgPackDecoder;
 import org.sprintdragon.ipc.codec.MsgPackEncoder;
 import org.sprintdragon.ipc.exc.ClientConnectException;
 import org.sprintdragon.ipc.exc.ClientTimeoutException;
-import org.sprintdragon.ipc.server.IpcServer;
 import org.sprintdragon.ipc.util.NetUtils;
-import org.sprintdragon.ipc.util.UUID;
 import org.sprintdragon.service.AbstractService;
-
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.net.InetSocketAddress;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by stereo on 16-8-4.
  */
-public class ClientProxy extends AbstractService{
+public class ClientProxy extends AbstractService {
 
-    private static Logger log = LoggerFactory.getLogger(ClientProxy.class);
+    private static Logger LOG = LoggerFactory.getLogger(ClientProxy.class);
 
     private Config config;
 
@@ -48,8 +48,10 @@ public class ClientProxy extends AbstractService{
     private final ClassLoader loader;
 
     public ClientProxy(Config config){
-        this(config,Thread.currentThread().getContextClassLoader());
+        this(config, Thread.currentThread().getContextClassLoader());
     }
+
+    private final Map<String, Callback> callbackMap = new ConcurrentHashMap<String, Callback>();
 
     public ClientProxy(Config config ,ClassLoader  loader)
     {
@@ -98,7 +100,7 @@ public class ClientProxy extends AbstractService{
                         p.addLast(
                                 new MsgPackEncoder(),
                                 new MsgPackDecoder(),
-                                new ClientHandler()
+                                new ClientHandler(ClientProxy.this)
                         );
                     }
                 });
@@ -137,27 +139,53 @@ public class ClientProxy extends AbstractService{
         }
     }
 
-    private Packet packet(String serviceName, String method,
-                          Class<?> returnType, Object[] params) {
-        Packet packet = new Packet();
-        UUID uuid = new UUID();
-        uuid.setS_id(serviceName + "-" + method);
-        packet.setId(uuid.toString());
-        packet.setState(IActionCall.STATUS_PENDING);
-        packet.setMethod(method);
-        packet.setInterfaceName(serviceName);
-        packet.setParams(params);
-        packet.setReturnType(returnType);
-        return packet;
+    public <T> T create(final Class<T> api)  throws Exception {
+        return create(api,loader);
+    }
+
+    public <T> T create(Class<?> api ,ClassLoader classLoader) throws Exception {
+        InvocationHandler invocationHandler = new RemoteProxy(this, api);
+        return (T) Proxy.newProxyInstance(classLoader, new Class[] { api }, invocationHandler);
+    }
+
+    protected void releaseCallBack() throws Exception {
+        if (getCallbackSize() > 0)
+            for (Callback callback : callbackMap.values())
+                callback.call(null);
+    }
+
+    protected int getCallbackSize() {
+        return callbackMap.size();
+    }
+
+    protected void setCallback(String messageId, Callback callback) {
+        callbackMap.put(messageId, callback);
+    }
+
+    protected Callback removeCallBack(String messageId) {
+        Callback ret = callbackMap.get(messageId);
+        if (ret != null)
+            callbackMap.remove(messageId);
+        return ret;
+    }
+
+    public Channel getChannel() {
+        return channel;
+    }
+
+    public Config getConfig() {
+        return config;
     }
 
     public static void main(String[] args) throws Exception {
-        ClientProxy clientProxy = new ClientProxy(new Config("127.0.0.1",10092));
-        clientProxy.init();
-        clientProxy.start();
-        System.out.println("ipc客户启动 5秒后关闭");
-        Thread.sleep(5000);
-        clientProxy.close();
-        System.out.println("ipc客户已经关闭");
+        ClientProxy clientProxy = new ClientProxy(new Config( "127.0.0.1" , 10092 ));
+        IFunction function = clientProxy.create(IFunction.class);
+        System.out.println(IFunction.class.getName());
+//        clientProxy.init();
+//        clientProxy.start();
+//        System.out.println("ipc客户启动 5秒后关闭");
+//        Thread.sleep(5000);
+//        clientProxy.close();
+//        System.out.println("ipc客户已经关闭");
     }
 }

@@ -6,8 +6,9 @@ import java.net.InetSocketAddress;
 
 public class Config {
 	private int soLinger = -1;
-	private int connectTimeout = 5000;
-	private int readTimeout = 30 * 1000;
+	private int connectTimeout = 5 * 1000;
+	private int sendTimeout = 5 * 1000;
+	private int readTimeout = 8 * 1000;
 	private int idleTimeout = 30 * 1000;
 	private int heartBeatRate = 15;
 	private int heartBeatTimeout = 10;
@@ -153,6 +154,14 @@ public class Config {
 		this.childNioEventThreads = childNioEventThreads;
 	}
 
+	public int getSendTimeout() {
+		return sendTimeout;
+	}
+
+	public void setSendTimeout(int sendTimeout) {
+		this.sendTimeout = sendTimeout;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -162,6 +171,7 @@ public class Config {
 
 		if (soLinger != config.soLinger) return false;
 		if (connectTimeout != config.connectTimeout) return false;
+		if (sendTimeout != config.sendTimeout) return false;
 		if (readTimeout != config.readTimeout) return false;
 		if (idleTimeout != config.idleTimeout) return false;
 		if (heartBeatRate != config.heartBeatRate) return false;
@@ -181,6 +191,7 @@ public class Config {
 	public int hashCode() {
 		int result = soLinger;
 		result = 31 * result + connectTimeout;
+		result = 31 * result + sendTimeout;
 		result = 31 * result + readTimeout;
 		result = 31 * result + idleTimeout;
 		result = 31 * result + heartBeatRate;
@@ -201,6 +212,7 @@ public class Config {
 		return "Config{" +
 				"soLinger=" + soLinger +
 				", connectTimeout=" + connectTimeout +
+				", sendTimeout=" + sendTimeout +
 				", readTimeout=" + readTimeout +
 				", idleTimeout=" + idleTimeout +
 				", heartBeatRate=" + heartBeatRate +

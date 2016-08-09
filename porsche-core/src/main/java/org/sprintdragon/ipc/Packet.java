@@ -41,6 +41,7 @@ public class Packet implements Serializable {
 	}
 
 	public Packet(String interfaceName, String method, Object[] params) {
+		super();
 		this.interfaceName = interfaceName;
 		this.method = method;
 		this.params = params;
@@ -55,6 +56,17 @@ public class Packet implements Serializable {
 		this.interfaceName = interfaceName;
 		this.method = method;
 		this.params = params;
+	}
+
+	public Packet(String id, byte type, byte state, String interfaceName, String method, Object[] params, Class<?> returnType) {
+		super();
+		this.id = id;
+		this.type = type;
+		this.state = state;
+		this.interfaceName = interfaceName;
+		this.method = method;
+		this.params = params;
+		this.returnType = returnType;
 	}
 
 	public String getId() {
