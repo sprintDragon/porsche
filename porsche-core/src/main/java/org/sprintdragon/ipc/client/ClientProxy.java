@@ -99,7 +99,7 @@ public class ClientProxy extends AbstractService {
                         }
                         p.addLast(
                                 new MsgPackEncoder(),
-                                new MsgPackDecoder(),
+                                new MsgPackDecoder(config.getPayload()),
                                 new ClientHandler(ClientProxy.this)
                         );
                     }
