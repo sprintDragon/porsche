@@ -176,16 +176,4 @@ public class ClientProxy extends AbstractService {
     public Config getConfig() {
         return config;
     }
-
-    public static void main(String[] args) throws Exception {
-        ClientProxy clientProxy = new ClientProxy(new Config( "127.0.0.1" , 10092 ));
-        IFunction function = clientProxy.create(IFunction.class);
-        System.out.println(IFunction.class.getName());
-//        clientProxy.init();
-//        clientProxy.start();
-//        System.out.println("ipc客户启动 5秒后关闭");
-//        Thread.sleep(5000);
-//        clientProxy.close();
-//        System.out.println("ipc客户已经关闭");
-    }
 }

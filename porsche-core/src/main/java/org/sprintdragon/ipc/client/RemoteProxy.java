@@ -66,7 +66,7 @@ public class RemoteProxy implements InvocationHandler {
             }
             int sequence = -1;
             //build packet
-            final Packet packet = packet(_type.getSimpleName(), method.getName(), method.getReturnType(), args);
+            final Packet packet = packet(_type.getName(), method.getName(), method.getReturnType(), args);
             LOG.debug("RemoteProxy invoke packet is " + packet);
             if (packet !=null && clientProxy.removeCallBack(packet.getId()) == null)
             {
@@ -75,7 +75,7 @@ public class RemoteProxy implements InvocationHandler {
 
                     @Override
                     public Class<?> getAcceptValueType() {
-                        return packet.getClass();
+                        return packet.getReturnType();
                     }
 
                     @Override
@@ -85,17 +85,14 @@ public class RemoteProxy implements InvocationHandler {
                 };
                 clientProxy.setCallback(packet.getId(), callback);
                 Channel channel = clientProxy.getChannel();
-                ChannelFuture channelFuture = channel.writeAndFlush(packet,channel.voidPromise()).sync();
+                ChannelFuture channelFuture = channel.writeAndFlush(packet).sync();
                 if(channelFuture.isSuccess())
                 {
                     try
                     {
                         Object result = future.get(getClientProxy().getConfig().getReadTimeout(), TimeUnit.MILLISECONDS);
                         LOG.debug("RemoteProxy invoke result is " + result);
-                        if(result == null)
-                            return result;
-                        else
-                            return callback.getAcceptValueType().isInstance(result) ? result : null;
+                        return result;
                     }catch (InterruptedException ex)
                     {
                         throw new IpcRuntimeException("RemoteProxy invoke packet "+ packet + " read timeout");

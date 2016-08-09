@@ -8,7 +8,7 @@ public class Config {
 	private int soLinger = -1;
 	private int connectTimeout = 5 * 1000;
 	private int sendTimeout = 5 * 1000;
-	private int readTimeout = 8 * 1000;
+	private int readTimeout = 15 * 1000;
 	private int idleTimeout = 30 * 1000;
 	private int heartBeatRate = 15;
 	private int heartBeatTimeout = 10;

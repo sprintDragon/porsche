@@ -8,7 +8,7 @@ import java.util.Set;
  * @author stereo
  * 
  */
-public interface IFacade extends INotifier {
+public interface IActionFacade extends INotifier {
 
 	/**
 	 * 广播事件

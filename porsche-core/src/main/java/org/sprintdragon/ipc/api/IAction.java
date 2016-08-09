@@ -5,7 +5,7 @@ package org.sprintdragon.ipc.api;
  * 
  * @author stereo
  */
-public interface IAction<T> extends INotifier {
+public interface IAction extends INotifier {
 
 	/**
 	 * 注册触发
@@ -30,7 +30,7 @@ public interface IAction<T> extends INotifier {
 	 * @param actionName
 	 * @return
 	 */
-	public IAction<T> resolveAction(String actionName);
+	public IAction resolveAction(String actionName);
 
 	/**
 	 * Action之间广播

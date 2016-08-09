@@ -28,7 +28,7 @@ public class MsgPackDecoder extends LengthFieldBasedFrameDecoder {
         {
             return null;
         }
-        ByteBufInputStream bin = new ByteBufInputStream(in);
+        ByteBufInputStream bin = new ByteBufInputStream(frame);
         int len = bin.available();
         if(len > 0)
         {

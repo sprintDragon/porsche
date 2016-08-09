@@ -1,18 +1,12 @@
 package org.sprintdragon.ipc.server;
 
-import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.serialization.ClassResolvers;
-import io.netty.handler.codec.serialization.ObjectDecoder;
-import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
@@ -89,7 +83,7 @@ public class IpcServer extends AbstractService {
                         p.addLast(
                                 new MsgPackEncoder(),
                                 new MsgPackDecoder(),
-                                new IpcServerHandler()
+                                new IpcEngine()
                         );
                     }
                 });
@@ -118,13 +112,4 @@ public class IpcServer extends AbstractService {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        IpcServer ipcServer = new IpcServer(new Config("127.0.0.1",10092));
-        ipcServer.init();
-        ipcServer.start();
-        System.out.println("ipc服务启动 休息30秒 ipc服务关闭");
-        Thread.sleep(30000);
-        ipcServer.close();
-        System.out.println("ipc服务已经关闭");
-    }
 }
