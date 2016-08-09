@@ -10,14 +10,18 @@ import org.sprintdragon.ipc.server.IpcServer;
  */
 public class Server {
 
-
     public static void main(String[] args) throws Exception {
+
+        //创建服务
         IpcServer ipcServer = new IpcServer(new Config("127.0.0.1",10092));
+        //初始化
         ipcServer.init();
+        //启动
         ipcServer.start();
+        //注册接口
         IActionFacade facade = ActionFacade.getInstance();
         facade.registerAction(new TestAction(ITestAction.class));
-        //Thread.sleep(30000);
+        //关闭服务
         //ipcServer.close();
     }
 }
