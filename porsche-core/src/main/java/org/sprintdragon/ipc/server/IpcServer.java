@@ -73,16 +73,18 @@ public class IpcServer extends AbstractService {
         bootstrap.group(bossGroup, workerGroup)
                 .channel(clazz)
                 .handler(new LoggingHandler(LogLevel.INFO))
-                .childHandler(new ChannelInitializer<SocketChannel>() {
+                .childHandler(new ChannelInitializer<SocketChannel>()
+                {
                     @Override
-                    public void initChannel(SocketChannel ch) throws Exception {
+                    public void initChannel(SocketChannel ch) throws Exception
+                    {
                         ChannelPipeline p = ch.pipeline();
                         if (sslCtx != null) {
                             p.addLast(sslCtx.newHandler(ch.alloc()));
                         }
                         p.addLast(
                                 new MsgPackEncoder(),
-                                new MsgPackDecoder(),
+                                new MsgPackDecoder(config.getPayload()),
                                 new IpcEngine()
                         );
                     }

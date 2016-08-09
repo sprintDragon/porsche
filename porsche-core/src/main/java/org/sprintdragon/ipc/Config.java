@@ -19,6 +19,7 @@ public class Config {
 	private int receiveBufferSize = 8 * 1024;
 	private boolean useEpoll = false;
 	private int childNioEventThreads = 6; //cpu+1
+	private int payload = 8 * 1024 * 1024;
 	private InetSocketAddress remoteAddress = new InetSocketAddress(
 			"0.0.0.0", 8099);
 
@@ -162,6 +163,14 @@ public class Config {
 		this.sendTimeout = sendTimeout;
 	}
 
+	public int getPayload() {
+		return payload;
+	}
+
+	public void setPayload(int payload) {
+		this.payload = payload;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -183,6 +192,7 @@ public class Config {
 		if (receiveBufferSize != config.receiveBufferSize) return false;
 		if (useEpoll != config.useEpoll) return false;
 		if (childNioEventThreads != config.childNioEventThreads) return false;
+		if (payload != config.payload) return false;
 		return remoteAddress != null ? remoteAddress.equals(config.remoteAddress) : config.remoteAddress == null;
 
 	}
@@ -203,6 +213,7 @@ public class Config {
 		result = 31 * result + receiveBufferSize;
 		result = 31 * result + (useEpoll ? 1 : 0);
 		result = 31 * result + childNioEventThreads;
+		result = 31 * result + payload;
 		result = 31 * result + (remoteAddress != null ? remoteAddress.hashCode() : 0);
 		return result;
 	}
@@ -224,6 +235,7 @@ public class Config {
 				", receiveBufferSize=" + receiveBufferSize +
 				", useEpoll=" + useEpoll +
 				", childNioEventThreads=" + childNioEventThreads +
+				", payload=" + payload +
 				", remoteAddress=" + remoteAddress +
 				'}';
 	}

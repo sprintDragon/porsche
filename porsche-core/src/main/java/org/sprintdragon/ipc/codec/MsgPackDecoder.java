@@ -17,8 +17,8 @@ public class MsgPackDecoder extends LengthFieldBasedFrameDecoder {
 
     private final MessagePack messagePack = new MessagePack();
 
-    public MsgPackDecoder() {
-        super(64 * 1024 * 1024, 0, 4, 0, 4);
+    public MsgPackDecoder(int maxFrameLength) {
+        super(maxFrameLength, 0, 4, 0, 4);
     }
 
     @Override
