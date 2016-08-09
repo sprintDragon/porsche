@@ -66,8 +66,6 @@ public class IpcServer extends AbstractService {
 
         bootstrap = new ServerBootstrap();
         bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
-        bootstrap.option(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, 32 * 1024);
-        bootstrap.option(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, 8 * 1024);
         bootstrap.option(ChannelOption.SO_LINGER ,config.getSoLinger());
         bootstrap.option(ChannelOption.RCVBUF_ALLOCATOR, AdaptiveRecvByteBufAllocator.DEFAULT);
         bootstrap.group(bossGroup, workerGroup)
