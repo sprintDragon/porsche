@@ -2,6 +2,10 @@ package org.ipc.test;
 
 import org.sprintdragon.ipc.Config;
 import org.sprintdragon.ipc.client.ClientProxy;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,6 +24,7 @@ public class Client {
         //5个线程调用远程接口
         ExecutorService executor = Executors.newFixedThreadPool(5);
         for (int i = 0; i < 5; i++) {
+            final int index = i;
             executor.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -29,8 +34,33 @@ public class Client {
                         while (true)
                         {
                             //调用服务接口
-                            Bean rs = testAction.aaa(new Bean());
-                            System.out.println("结果=" + rs);
+                            if(index == 0)
+                            {
+                                Bean rs = testAction.test1(new Bean());
+                                System.out.println("test1 结果=" + rs);
+                            }
+                            else if (index == 1)
+                            {
+                                int rs = testAction.test2(new Bean());
+                                System.out.println("test2 结果=" + rs);
+                            }
+                            else if (index == 2)
+                            {
+                                int rs = testAction.test3();
+                                System.out.println("test3 结果=" + rs);
+                            }
+                            else if (index == 3)
+                            {
+                                testAction.test4();
+                                System.out.println("test4 结果 无返回值");
+                            }
+                            else if (index == 4)
+                            {
+                                List<Bean> list = new ArrayList<Bean>();
+                                list.add(new Bean());
+                                Map<String,Bean> rs = testAction.test5(list);
+                                System.out.println("test5 结果=" + rs);
+                            }
                             Thread.sleep(500);
                         }
                     }catch (Exception ex){

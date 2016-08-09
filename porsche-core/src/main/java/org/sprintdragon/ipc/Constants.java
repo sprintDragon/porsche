@@ -1,5 +1,8 @@
 package org.sprintdragon.ipc;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by stereo on 16-8-9.
  */
@@ -27,4 +30,36 @@ public final class Constants {
     public static final byte TYPE_RESPONSE = 0x02;	//普通响应类型
     public static final byte TYPE_HEARTBEAT_REQUEST = 0x03; //心跳请求类型
     public static final byte TYPE_HEARTBEAT_RESPONSE = 0x04;//心跳响应类型
+
+    public static final Map<Class,String> primitiveClassMap = new HashMap<Class, String>();
+    static {
+        primitiveClassMap.put(int.class,"0");
+        primitiveClassMap.put(Integer.class,"0");
+
+        primitiveClassMap.put(long.class,"1");
+        primitiveClassMap.put(Long.class,"1");
+
+        primitiveClassMap.put(short.class,"2");
+        primitiveClassMap.put(Short.class,"2");
+
+        primitiveClassMap.put(byte.class,"3");
+        primitiveClassMap.put(Byte.class,"3");
+
+
+        primitiveClassMap.put(char.class,"4");
+        primitiveClassMap.put(Character.class,"4");
+
+        primitiveClassMap.put(boolean.class,"5");
+        primitiveClassMap.put(Boolean.class,"5");
+
+        primitiveClassMap.put(float.class,"6");
+        primitiveClassMap.put(Float.class,"6");
+
+        primitiveClassMap.put(double.class,"7");
+        primitiveClassMap.put(Double.class,"7");
+
+        //primitiveClassMap.put(void.class,"8");
+        //primitiveClassMap.put(Void.class,"8");
+    }
+
 }

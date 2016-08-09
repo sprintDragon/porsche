@@ -14,6 +14,8 @@ import org.sprintdragon.service.Service;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -96,7 +98,14 @@ public class RemoteProxy implements InvocationHandler {
                         {
                             Object result = future.get(getClientProxy().getConfig().getReadTimeout(), TimeUnit.MILLISECONDS);
                             LOG.debug("RemoteProxy invoke result is " + result);
-                            return result;
+                            if(Void.class.equals(callback.getAcceptValueType()) || void.class.equals(callback.getAcceptValueType()))
+                                return null;
+                            if(isReturnType(callback.getAcceptValueType(),result.getClass()))
+                            {
+                                return result;
+                            }
+                            else
+                                throw new IpcRuntimeException("RemoteProxy invoke result type error");
                         }catch (InterruptedException ex)
                         {
                             throw new IpcRuntimeException("RemoteProxy invoke packet "+ packet + " read timeout");
@@ -121,6 +130,14 @@ public class RemoteProxy implements InvocationHandler {
         UUID uuid = new UUID();
         uuid.setS_id(serviceName + "-" + method);
         return new Packet(uuid.toString(),Constants.TYPE_REQUEST,Constants.STATUS_PENDING,serviceName,method,params,returnType);
+    }
+
+    boolean isReturnType(Class<?> original, Class<?> current) {
+        Map<Class,String> primitiveClassMap = Constants.primitiveClassMap;
+        if(primitiveClassMap.get(original)!=null)
+            return primitiveClassMap.get(original).equals(primitiveClassMap.get(current));
+        else
+            return original.isAssignableFrom(current);
     }
 
     private ClientProxy getClientProxy() {
