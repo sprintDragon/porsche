@@ -248,7 +248,35 @@ public abstract class AbstractTemplateBuilder implements TemplateBuilder {
 
     public static boolean isAnnotated(Class<?> targetClass,
             Class<? extends Annotation> with) {
-        return targetClass.getAnnotation(with) != null;
+        if(targetClass.getAnnotation(with) != null)
+            return true;
+
+        Class<?> superClass = targetClass;
+        while (superClass!=null)
+        {
+            if (superClass.getAnnotation(with)!=null)
+                return true;
+            else
+                superClass = superClass.getSuperclass();
+        }
+
+        Class<?>[] interfaces = targetClass.getInterfaces();
+        return isInterfaceHasAnnotated(interfaces,with);
+    }
+
+    public static boolean isInterfaceHasAnnotated(Class<?>[] interfaces,
+                                      Class<? extends Annotation> with){
+        if(interfaces!=null && interfaces.length > 0)
+        {
+            for (int i = 0; i < interfaces.length; i++) {
+                Class<?> inter = interfaces[i];
+                if (inter.getAnnotation(with)!=null || isInterfaceHasAnnotated(inter.getInterfaces(),with))
+                    return true;
+            }
+            return false;
+        }else {
+            return false;
+        }
     }
 
     public static boolean isAnnotated(AccessibleObject accessibleObject, Class<? extends Annotation> with) {

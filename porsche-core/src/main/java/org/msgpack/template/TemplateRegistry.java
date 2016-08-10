@@ -270,7 +270,7 @@ public class TemplateRegistry {
 
         throw new MessageTypeException(
                 "Cannot find template for " + targetClass + " class.  " +
-                "Try to add @Message annotation to the class or call MessagePack.register(Type).");
+                "Try to add @Message annotation to the class or implements BeanMessage or call MessagePack.register(Type).");
     }
 
     private Template<Type> lookupGenericType(ParameterizedType paramedType) {

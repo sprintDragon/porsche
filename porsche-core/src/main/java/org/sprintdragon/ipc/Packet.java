@@ -1,7 +1,7 @@
 package org.sprintdragon.ipc;
 
-import org.msgpack.annotation.Message;
-import java.io.Serializable;
+import org.msgpack.BeanMessage;
+
 import java.util.Arrays;
 
 /**
@@ -10,8 +10,7 @@ import java.util.Arrays;
  * @author stereo
  * @version 2014.5.21
  */
-@Message
-public class Packet implements Serializable {
+public class Packet implements BeanMessage {
 
 	private static final long serialVersionUID = -3447224470014044569L;
 

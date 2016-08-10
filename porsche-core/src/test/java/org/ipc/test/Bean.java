@@ -1,13 +1,13 @@
 package org.ipc.test;
 
-import org.msgpack.annotation.Message;
+import org.msgpack.BeanMessage;
+
 import java.util.Date;
 
 /**
  * Created by stereo on 16-8-9.
  */
-@Message
-public class Bean {
+public class Bean implements BeanMessage {
     public int a = 1;
     public long b = 2l;
     public String c = "bean";

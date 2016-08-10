@@ -1,14 +1,11 @@
 package org.msgpack.test;
 
-import org.msgpack.annotation.Message;
-
-import java.io.Serializable;
+import org.msgpack.BeanMessage;
 
 /**
  * Created by stereo on 16-8-5.
  */
-@Message
-public class King implements Serializable{
+public class King implements BeanMessage {
 
     public String jj = "ll";
 }
