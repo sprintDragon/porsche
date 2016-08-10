@@ -127,6 +127,7 @@ public class TemplateRegistry {
         register(Timestamp.class,TimestampTemplate.getInstance());
         register(Time.class,TimeTemplate.getInstance());
         register(TimeZone.class,TimeZoneTemplate.getInstance());
+        register(Throwable.class,new ExceptionTemplate(this));
         registerTemplatesWhichRefersRegistry();
     }
 

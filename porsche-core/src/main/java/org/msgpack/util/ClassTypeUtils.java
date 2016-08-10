@@ -1,6 +1,10 @@
 package org.msgpack.util;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -168,6 +172,36 @@ public class ClassTypeUtils {
             return cnName;
         }
         return jvmName;
+    }
+
+    public static Field[] getFields(Class<?> targetClass) {
+        if(targetClass == null){
+            return new Field[0];
+        }
+        List<Field[]> succ = new ArrayList<Field[]>();
+        for (Class<?> c = targetClass; c != Object.class && c != null; c = c.getSuperclass()) {
+            Field[] fields = c.getDeclaredFields();
+            succ.add(fields);
+        }
+        List<Field> resultList = new ArrayList<Field>();
+        for(Field[] fields : succ){
+            for(Field  f : fields){
+                int mod = f.getModifiers();
+                // default mode:
+                // transient, static, final : Ignore
+                //2015.01.29 支持final序列化
+                if (Modifier.isStatic(mod) || Modifier.isTransient(mod)) {
+                    continue;
+                }
+                f.setAccessible(true);
+                resultList.add(f);
+            }
+        }
+        Field[] result = new Field[resultList.size()];
+        for (int i = resultList.size() - 1; i >= 0; i--) {
+            result[i] = resultList.get(i);
+        }
+        return result;
     }
 }
 
