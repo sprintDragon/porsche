@@ -74,23 +74,5 @@ public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements Ip
         return packet;
     }
 
-    @Override
-    public void registerAction(IAction action) {
-        actionContext.registerAction(action);
-    }
 
-    @Override
-    public IAction retrieveAction(String actionName) {
-        return actionContext.retrieveAction(actionName);
-    }
-
-    @Override
-    public IAction removeAction(String actionName) {
-        return actionContext.removeAction(actionName);
-    }
-
-    @Override
-    public boolean hasAction(String actionName) {
-        return actionContext.hasAction(actionName);
-    }
 }

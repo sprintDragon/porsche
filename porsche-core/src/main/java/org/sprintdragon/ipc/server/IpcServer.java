@@ -39,8 +39,6 @@ public class IpcServer extends AbstractService {
 
     private Channel channel;
 
-    private IpcEngine ipcEngine;
-
     public IpcServer(Config config) {
         super("IpcServer"+":"+config.getRemoteAddress().toString());
         this.config = config;
@@ -68,7 +66,6 @@ public class IpcServer extends AbstractService {
             workerGroup = new NioEventLoopGroup(config.getChildNioEventThreads());
             clazz = NioServerSocketChannel.class;
         }
-        ipcEngine = new IpcEngineHandler();
         bootstrap = new ServerBootstrap();
         bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
         bootstrap.option(ChannelOption.SO_LINGER ,config.getSoLinger());
@@ -88,7 +85,7 @@ public class IpcServer extends AbstractService {
                         p.addLast(
                                 new MsgPackEncoder(),
                                 new MsgPackDecoder(config.getPayload()),
-                                (ChannelHandler) ipcEngine
+                                new IpcEngineHandler()
                         );
                     }
                 });
@@ -120,7 +117,7 @@ public class IpcServer extends AbstractService {
             throw new IpcRuntimeException("IpcServer is not started");
     }
 
-    public IpcEngine getIpcEngine() {
-        return ipcEngine;
+    public IpcRegistry getIpcRegistry(){
+        return IpcRegistry.get();
     }
 }
