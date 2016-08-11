@@ -7,34 +7,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sprintdragon.ipc.Constants;
 import org.sprintdragon.ipc.Packet;
+import org.sprintdragon.ipc.acton.ActionCall;
 import org.sprintdragon.ipc.acton.ActionContext;
 import org.sprintdragon.ipc.acton.ActionFacade;
-import org.sprintdragon.ipc.api.EngineHandler;
-import org.sprintdragon.ipc.api.IActionContext;
-import org.sprintdragon.ipc.api.IActionFacade;
-import org.sprintdragon.ipc.client.Callback;
-import org.sprintdragon.ipc.client.ClientHandler;
+import org.sprintdragon.ipc.api.*;
 
 /**
  * Created by stereo on 16-8-9.
  */
-public class IpcEngine extends ChannelInboundHandlerAdapter implements EngineHandler<Packet> {
+public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements IpcEngine{
 
-    private static Logger LOG = LoggerFactory.getLogger(IpcEngine.class);
+    private static Logger LOG = LoggerFactory.getLogger(IpcEngineHandler.class);
 
-    protected IActionFacade actionFacade;
+    private IActionContext actionContext;
 
-    protected IActionContext actionContext;
-
-    public IpcEngine(){
-        actionFacade = ActionFacade.getInstance();
+    public IpcEngineHandler(){
         actionContext = ActionContext.getInstance();
-    }
-
-    @Override
-    public Packet handle(Packet packet){
-        actionContext.invoke(packet);
-        return packet;
     }
 
     @Override
@@ -47,7 +35,7 @@ public class IpcEngine extends ChannelInboundHandlerAdapter implements EngineHan
                 switch (packet.getType())
                 {
                     case Constants.TYPE_REQUEST:
-                        packet = handle(packet);
+                        packet = handleAction(packet);
                         channel.writeAndFlush(packet).sync();
                         break;
                     case Constants.TYPE_RESPONSE:
@@ -60,17 +48,49 @@ public class IpcEngine extends ChannelInboundHandlerAdapter implements EngineHan
                         break;
                 }
             } catch (Exception e) {
-                LOG.error("IpcEngine.handle packet is " + msg + " error");
+                LOG.error("IpcEngineHandler.handle packet is " + msg + " error");
                 e.printStackTrace();
             }
         }
         else
-            LOG.error("IpcEngine.channelRead error msg is " + msg);
+            LOG.error("IpcEngineHandler.channelRead error msg is " + msg);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        LOG.error("IpcEngine.exceptionCaught",cause);
+        LOG.error("IpcEngineHandler.exceptionCaught",cause);
         ctx.close();
+    }
+
+
+    @Override
+    public Packet handleAction(Packet packet){
+        IActionInvoker actionInvoker = actionContext.getActionInvoker();
+        boolean isSuccess = actionInvoker.invoke(new ActionCall(packet));
+        if (!isSuccess)
+        {
+            LOG.debug("IpcEngine handlePacket is failed packet:" + packet);
+        }
+        return packet;
+    }
+
+    @Override
+    public void registerAction(IAction action) {
+        actionContext.registerAction(action);
+    }
+
+    @Override
+    public IAction retrieveAction(String actionName) {
+        return actionContext.retrieveAction(actionName);
+    }
+
+    @Override
+    public IAction removeAction(String actionName) {
+        return actionContext.removeAction(actionName);
+    }
+
+    @Override
+    public boolean hasAction(String actionName) {
+        return actionContext.hasAction(actionName);
     }
 }

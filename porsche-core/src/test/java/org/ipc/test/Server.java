@@ -3,7 +3,9 @@ package org.ipc.test;
 import org.sprintdragon.ipc.Config;
 import org.sprintdragon.ipc.acton.ActionFacade;
 import org.sprintdragon.ipc.api.IActionFacade;
+import org.sprintdragon.ipc.api.IpcEngine;
 import org.sprintdragon.ipc.server.IpcServer;
+import org.sprintdragon.service.Service;
 
 /**
  * Created by stereo on 16-8-9.
@@ -19,8 +21,8 @@ public class Server {
         //启动
         ipcServer.start();
         //注册接口
-        IActionFacade facade = ActionFacade.getInstance();
-        facade.registerAction(new TestAction(ITestAction.class));
+        IpcEngine ipcEngine = ipcServer.getIpcEngine();
+        ipcEngine.registerAction(new TestAction(ITestAction.class));
         //关闭服务
         //ipcServer.close();
     }

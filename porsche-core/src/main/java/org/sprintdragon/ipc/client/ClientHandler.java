@@ -24,7 +24,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        LOG.debug("ClientHandler.channelRead msg is " + msg);
+        //LOG.debug("ClientHandler.channelRead msg is " + msg);
         Channel channel = ctx.channel();
         if(msg instanceof Packet)
         {
@@ -35,7 +35,10 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
                     break;
                 case Constants.TYPE_RESPONSE:
                     Callback callback = clientProxy.removeCallBack(packet.getId());
-                    callback.call(packet.getResult());
+                    if (callback!=null)
+                        callback.call(packet);
+                    else
+                        LOG.debug("ClientHandler.channelRead discard packet:" + packet);
                     break;
                 case Constants.TYPE_HEARTBEAT_REQUEST:
                     break;

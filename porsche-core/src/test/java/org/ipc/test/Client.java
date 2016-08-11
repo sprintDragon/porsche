@@ -21,9 +21,9 @@ public class Client {
         clientProxy.init();
         //连接远程服务
         clientProxy.start();
-        //5个线程调用远程接口
-        ExecutorService executor = Executors.newFixedThreadPool(5);
-        for (int i = 0; i < 5; i++) {
+        //6个线程调用远程接口
+        ExecutorService executor = Executors.newFixedThreadPool(6);
+        for (int i = 0; i < 6; i++) {
             final int index = i;
             executor.execute(new Runnable() {
                 @Override
@@ -60,6 +60,10 @@ public class Client {
                                 list.add(new Bean());
                                 Map<String,Bean> rs = testAction.test5(list);
                                 System.out.println("test5 结果=" + rs);
+                            }else if (index == 5)
+                            {
+                                Bean2 rs = testAction.test6(new Bean());
+                                System.out.println("test6 结果=" + rs);
                             }
                             Thread.sleep(500);
                         }

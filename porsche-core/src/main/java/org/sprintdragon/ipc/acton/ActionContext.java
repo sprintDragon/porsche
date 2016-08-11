@@ -153,13 +153,7 @@ public class ActionContext extends AttributeStore implements IActionContext,
 		return actionMap.values().iterator();
 	}
 
-	@Override
-	public boolean invoke(Packet message) {
-		return invoke(new ActionCall(message));
-	}
-
-	@Override
-	public boolean invoke(IActionCall actionCall) {
-		return actionInvoker.invoke(actionCall);
+	public IActionInvoker getActionInvoker() {
+		return actionInvoker;
 	}
 }

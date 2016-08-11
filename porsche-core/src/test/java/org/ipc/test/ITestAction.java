@@ -17,4 +17,6 @@ public interface ITestAction {
     public void test4();
 
     public Map<String,Bean> test5(List<Bean> beens);
+
+    public Bean2 test6(Bean bean);
 }

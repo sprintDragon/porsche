@@ -56,4 +56,10 @@ public class TestAction extends Action implements ITestAction{
         }
         return map;
     }
+
+    @Override
+    public Bean2 test6(Bean bean) {
+        LOG.info("TestAction.test6 " + bean);
+        return new Bean2();
+    }
 }

@@ -15,9 +15,12 @@ import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sprintdragon.ipc.Config;
+import org.sprintdragon.ipc.api.IpcEngine;
 import org.sprintdragon.ipc.codec.MsgPackDecoder;
 import org.sprintdragon.ipc.codec.MsgPackEncoder;
+import org.sprintdragon.ipc.exc.IpcRuntimeException;
 import org.sprintdragon.service.AbstractService;
+import org.sprintdragon.service.Service;
 
 /**
  * Created by stereo on 16-8-4.
@@ -35,6 +38,8 @@ public class IpcServer extends AbstractService {
     private EventLoopGroup workerGroup;
 
     private Channel channel;
+
+    private IpcEngine ipcEngine;
 
     public IpcServer(Config config) {
         super("IpcServer"+":"+config.getRemoteAddress().toString());
@@ -63,7 +68,7 @@ public class IpcServer extends AbstractService {
             workerGroup = new NioEventLoopGroup(config.getChildNioEventThreads());
             clazz = NioServerSocketChannel.class;
         }
-
+        ipcEngine = new IpcEngineHandler();
         bootstrap = new ServerBootstrap();
         bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
         bootstrap.option(ChannelOption.SO_LINGER ,config.getSoLinger());
@@ -83,7 +88,7 @@ public class IpcServer extends AbstractService {
                         p.addLast(
                                 new MsgPackEncoder(),
                                 new MsgPackDecoder(config.getPayload()),
-                                new IpcEngine()
+                                (ChannelHandler) ipcEngine
                         );
                     }
                 });
@@ -95,6 +100,8 @@ public class IpcServer extends AbstractService {
         {
             channel = bootstrap.bind(config.getHost(),config.getPort()).sync().channel();
         }
+        else
+            throw new IpcRuntimeException("IpcServer is not inited");
     }
 
     @Override
@@ -109,7 +116,11 @@ public class IpcServer extends AbstractService {
             bossGroup = null;
             workerGroup = null;
 
-        }
+        }else
+            throw new IpcRuntimeException("IpcServer is not started");
     }
 
+    public IpcEngine getIpcEngine() {
+        return ipcEngine;
+    }
 }

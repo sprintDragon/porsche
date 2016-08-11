@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
+import static org.sprintdragon.ipc.Constants.*;
+
 /**
  * Created by stereo on 16-8-8.
  */
@@ -73,7 +75,7 @@ public class RemoteProxy implements InvocationHandler {
                 int sequence = -1;
                 //build packet
                 final Packet packet = packet(_type.getName(), method.getName(), method.getReturnType(), args);
-                LOG.debug("RemoteProxy invoke packet is " + packet);
+                //LOG.debug("RemoteProxy invoke packet is " + packet);
                 if (packet !=null && clientProxy.removeCallBack(packet.getId()) == null)
                 {
                     final AsyncFuture<Object> future = new AsyncFuture<Object>();
@@ -81,7 +83,7 @@ public class RemoteProxy implements InvocationHandler {
 
                         @Override
                         public Class<?> getAcceptValueType() {
-                            return packet.getReturnType();
+                            return packet.getClass();
                         }
 
                         @Override
@@ -90,37 +92,36 @@ public class RemoteProxy implements InvocationHandler {
                         }
                     };
                     clientProxy.setCallback(packet.getId(), callback);
-                    Channel channel = clientProxy.getChannel();
-                    ChannelFuture channelFuture = channel.writeAndFlush(packet).sync();
-                    if(channelFuture.isSuccess())
+                    try
                     {
-                        try
+                        //发送请求
+                        if(sendRequest(packet).isSuccess())
                         {
-                            Object result = future.get(getClientProxy().getConfig().getReadTimeout(), TimeUnit.MILLISECONDS);
-                            LOG.debug("RemoteProxy invoke result is " + result);
-                            if(Void.class.equals(callback.getAcceptValueType()) || void.class.equals(callback.getAcceptValueType()))
-                                return null;
-                            if(isReturnType(callback.getAcceptValueType(),result.getClass()))
+                            try
                             {
-                                return result;
+                                Object resultPacket = future.get(getClientProxy().getConfig().getReadTimeout(), TimeUnit.MILLISECONDS);
+                                //响应结果
+                                return receiveResponse((Packet) resultPacket);
+                            }catch (InterruptedException ex)
+                            {
+                                throw new IpcRuntimeException("ClientProxy >>> read timeout " + "packet : "+ packet);
                             }
-                            else
-                                throw new IpcRuntimeException("RemoteProxy invoke result type error");
-                        }catch (InterruptedException ex)
-                        {
-                            throw new IpcRuntimeException("RemoteProxy invoke packet "+ packet + " read timeout");
                         }
+                        else
+                            throw new IpcRuntimeException("ClientProxy >>> send error " + "packet : "+ packet);
+                    }catch (Exception ex){
+                        //请求失败后移除回调
+                        clientProxy.removeCallBack(packet.getId());
+                        throw ex;
                     }
-                    else
-                        throw new IpcRuntimeException("RemoteProxy invoke packet "+ packet + " send error");
                 }else
-                    throw new IpcRuntimeException("RemoteProxy invoke packet error");
+                    throw new IpcRuntimeException("ClientProxy >>> packet error : " + packet);
             }else
-                throw new IpcRuntimeException("ClientProxy state is not started");
+                throw new IpcRuntimeException("ClientProxy >>> state is not started");
         }
         catch (Exception ex)
         {
-            LOG.error("RemoteProxy invoke",ex);
+            LOG.error("ClientProxy exc", ex);
             throw new IpcRuntimeException(ex);
         }
     }
@@ -129,10 +130,59 @@ public class RemoteProxy implements InvocationHandler {
                           Class<?> returnType, Object[] params) {
         UUID uuid = new UUID();
         uuid.setS_id(serviceName + "-" + method);
-        return new Packet(uuid.toString(),Constants.TYPE_REQUEST,Constants.STATUS_PENDING,serviceName,method,params,returnType);
+        return new Packet(uuid.toString(),Constants.TYPE_REQUEST, STATUS_PENDING,serviceName,method,params,returnType);
     }
 
-    boolean isReturnType(Class<?> original, Class<?> current) {
+    private ChannelFuture sendRequest(Packet request) throws InterruptedException
+    {
+        Channel channel = clientProxy.getChannel();
+        return channel.writeAndFlush(request).sync();
+    }
+
+    private Object receiveResponse(Packet response)
+    {
+        Object result = response.getResult();
+        byte state = response.getState();
+        String exc = null;
+        switch (response.getState())
+        {
+            case STATUS_PENDING:
+                exc = "ClientProxy >>> request is not processed";
+                break;
+            case STATUS_SUCCESS_RESULT:
+                if(isReturnType(response.getReturnType(),result.getClass()))
+                {
+                    return result;
+                }
+                else
+                    exc = "ClientProxy >>> result type error";
+                break;
+            case STATUS_SUCCESS_NULL:
+                return null;
+            case STATUS_SUCCESS_VOID:
+                return null;
+            case STATUS_SERVICE_NOT_FOUND:
+                exc = "ClientProxy >>> request Action is not found";
+                break;
+            case STATUS_METHOD_NOT_FOUND:
+                exc = "ClientProxy >>> request action method is not found";
+                break;
+            case STATUS_ACCESS_DENIED:
+                exc = "ClientProxy >>> request action access denied";
+                break;
+            case STATUS_INVOCATION_EXCEPTION:
+                exc = "ClientProxy >>> request action method invocation failed";
+                break;
+            case STATUS_GENERAL_EXCEPTION:
+                exc = response.getException();
+                break;
+        }
+        if (exc!=null)
+            throw new IpcRuntimeException(exc);
+        return null;
+    }
+
+    private boolean isReturnType(Class<?> original, Class<?> current) {
         Map<Class,String> primitiveClassMap = Constants.primitiveClassMap;
         if(primitiveClassMap.get(original)!=null)
             return primitiveClassMap.get(original).equals(primitiveClassMap.get(current));

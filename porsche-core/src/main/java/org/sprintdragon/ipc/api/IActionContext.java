@@ -73,17 +73,5 @@ public interface IActionContext {
 	 */
 	public boolean hasAction(String actionName);
 
-	/**
-	 * 处理数据包
-	 * 
-	 * @param packet
-	 * @return
-	 */
-	public boolean invoke(Packet packet);
-
-	/**
-	 * @param actionCall
-	 * @return
-	 */
-	public boolean invoke(IActionCall actionCall);
+	public IActionInvoker getActionInvoker();
 }
