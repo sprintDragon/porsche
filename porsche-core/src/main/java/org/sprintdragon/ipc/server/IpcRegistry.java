@@ -27,7 +27,8 @@ public abstract class IpcRegistry {
         return actionContext.hasAction(actionName);
     }
 
-    public static IpcRegistry get(){
-        return new IpcRegistry() {};
+    private static IpcRegistry registry = new IpcRegistry() {};
+    static IpcRegistry get(){
+        return registry;
     }
 }
