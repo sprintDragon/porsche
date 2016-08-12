@@ -18,12 +18,13 @@ public class ActionFacade extends AttributeStore implements IActionFacade {
 	 */
 	private static final long serialVersionUID = -9157702014060683354L;
 
-	protected static volatile ActionFacade instance = null;
+	private static class ActionFacadeHolder{
+		private static ActionFacade instance = new ActionFacade();
+	}
 
 	protected ActionContext actionContext = null;
 
-	protected ActionFacade() {
-		instance = this;
+	private ActionFacade() {
 		initializeFacade();
 	}
 
@@ -33,14 +34,8 @@ public class ActionFacade extends AttributeStore implements IActionFacade {
 		actionContext = ActionContext.getInstance();
 	}
 
-	public synchronized static ActionFacade getInstance() {
-		if (instance == null) {
-			synchronized (ActionFacade.class) {
-				if (instance == null)
-					new ActionFacade();
-			}
-		}
-		return instance;
+	public static ActionFacade getInstance() {
+		return ActionFacadeHolder.instance;
 	}
 
 	@Override

@@ -19,32 +19,28 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ActionContext extends AttributeStore implements IActionContext,
 		Iterable<IAction> {
 
-	protected static ActionContext instance;
 	protected IActionInvoker actionInvoker;
 	protected Map<String, IAction> actionMap;
 	protected Map<String, List<IObserver>> observerMap;
 	public static Logger logger = LoggerFactory.getLogger(ActionContext.class);
 	private static ThreadLocal<WeakReference<Object>> threadLocal = new ThreadLocal<WeakReference<Object>>();
 
-	protected ActionContext() {
-		instance = this;
-		actionInvoker = new ActionInvoker(this);
-		actionMap = new ConcurrentHashMap<String, IAction>();
-		observerMap = new ConcurrentHashMap<String, List<IObserver>>();
+	private static class ActionContextHolder{
+		private static ActionContext instance = new ActionContext();
+	}
+
+	private ActionContext() {
 		initializeActionContext();
 	}
 
 	protected void initializeActionContext() {
+		actionInvoker = new ActionInvoker(this);
+		actionMap = new ConcurrentHashMap<String, IAction>();
+		observerMap = new ConcurrentHashMap<String, List<IObserver>>();
 	}
 
-	public synchronized static ActionContext getInstance() {
-		if (instance == null) {
-			synchronized (ActionContext.class) {
-				if (instance == null)
-					new ActionContext();
-			}
-		}
-		return instance;
+	public static ActionContext getInstance() {
+		return ActionContextHolder.instance;
 	}
 
 	public static Object getObjectLocal() {
