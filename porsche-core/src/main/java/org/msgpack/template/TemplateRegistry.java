@@ -86,6 +86,7 @@ public class TemplateRegistry {
     }
 
     private void registerTemplates() {
+        //parent
         register(boolean.class, BooleanTemplate.getInstance());
         register(Boolean.class, BooleanTemplate.getInstance());
         register(byte.class, ByteTemplate.getInstance());
@@ -127,11 +128,12 @@ public class TemplateRegistry {
         register(Timestamp.class,TimestampTemplate.getInstance());
         register(Time.class,TimeTemplate.getInstance());
         register(TimeZone.class,TimeZoneTemplate.getInstance());
-        register(Throwable.class,new ExceptionTemplate(this));
         registerTemplatesWhichRefersRegistry();
     }
 
     protected void registerTemplatesWhichRefersRegistry() {
+        //current
+        register(Throwable.class,new ExceptionTemplate(this));
         ObjectTemplate objectTemplate = new ObjectTemplate(this);
         register(Object.class,objectTemplate);
         ArrayListTemplate arrayListTemplate = new ArrayListTemplate(this);
