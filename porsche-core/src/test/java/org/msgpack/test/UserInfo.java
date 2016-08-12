@@ -20,7 +20,7 @@ public class UserInfo implements BeanMessage {
 
     public Object object = new String("hellow");
 
-    public IpcRuntimeException ipcRuntimeException = new IpcRuntimeException("test");
+    public IpcRuntimeException ipcRuntimeException = new IpcRuntimeException("test",new RuntimeException("不对"));
 
     public static void main(String[] args) {
         Method cls = UserInfo.class.getMethods()[0];
