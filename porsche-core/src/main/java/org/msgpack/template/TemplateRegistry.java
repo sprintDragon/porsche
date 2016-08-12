@@ -34,6 +34,8 @@ import java.nio.ByteBuffer;
 
 import org.msgpack.MessagePackable;
 import org.msgpack.MessageTypeException;
+import org.msgpack.template.builder.StackTraceElementArrayTemplate;
+import org.msgpack.template.builder.StackTraceElementTemplate;
 import org.msgpack.template.builder.TemplateBuilder;
 import org.msgpack.template.builder.TemplateBuilderChain;
 import org.msgpack.type.Value;
@@ -128,6 +130,8 @@ public class TemplateRegistry {
         register(Timestamp.class,TimestampTemplate.getInstance());
         register(Time.class,TimeTemplate.getInstance());
         register(TimeZone.class,TimeZoneTemplate.getInstance());
+        register(StackTraceElement.class, StackTraceElementTemplate.getInstance());
+        register(StackTraceElement[].class, StackTraceElementArrayTemplate.getInstance());
         registerTemplatesWhichRefersRegistry();
     }
 

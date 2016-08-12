@@ -8,4 +8,7 @@ import org.msgpack.BeanMessage;
 public class King implements BeanMessage {
 
     public String jj = "ll";
+
+    public enum A{
+    }
 }
