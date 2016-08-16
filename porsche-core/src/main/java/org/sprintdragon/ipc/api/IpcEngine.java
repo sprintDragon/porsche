@@ -9,5 +9,5 @@ import org.sprintdragon.ipc.Packet;
  */
 public interface IpcEngine{
 
-	public Packet handleAction(Packet e);
+	public Packet handleRequest(Packet packet);
 }

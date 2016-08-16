@@ -39,6 +39,10 @@ public class IpcServer extends AbstractService {
 
     private Channel channel;
 
+    public IpcServer(){
+        this(new Config());
+    }
+
     public IpcServer(Config config) {
         super("IpcServer"+":"+config.getRemoteAddress().toString());
         this.config = config;
@@ -119,5 +123,9 @@ public class IpcServer extends AbstractService {
 
     public IpcRegistry getIpcRegistry(){
         return IpcRegistry.get();
+    }
+
+    public Config getConfig() {
+        return config;
     }
 }

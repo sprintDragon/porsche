@@ -9,7 +9,6 @@ import org.sprintdragon.ipc.Constants;
 import org.sprintdragon.ipc.Packet;
 import org.sprintdragon.ipc.acton.ActionCall;
 import org.sprintdragon.ipc.acton.ActionContext;
-import org.sprintdragon.ipc.acton.ActionFacade;
 import org.sprintdragon.ipc.api.*;
 
 /**
@@ -35,14 +34,10 @@ public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements Ip
                 switch (packet.getType())
                 {
                     case Constants.TYPE_REQUEST:
-                        packet = handleAction(packet);
+                        packet = handleRequest(packet);
                         channel.writeAndFlush(packet).sync();
                         break;
                     case Constants.TYPE_RESPONSE:
-                        break;
-                    case Constants.TYPE_HEARTBEAT_REQUEST:
-                        break;
-                    case Constants.TYPE_HEARTBEAT_RESPONSE:
                         break;
                     default:
                         break;
@@ -62,9 +57,8 @@ public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements Ip
         ctx.close();
     }
 
-
     @Override
-    public Packet handleAction(Packet packet){
+    public Packet handleRequest(Packet packet) {
         IActionInvoker actionInvoker = actionContext.getActionInvoker();
         boolean isSuccess = actionInvoker.invoke(new ActionCall(packet));
         if (!isSuccess)
@@ -73,6 +67,4 @@ public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements Ip
         }
         return packet;
     }
-
-
 }

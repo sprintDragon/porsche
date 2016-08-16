@@ -1,7 +1,6 @@
 package org.sprintdragon.ipc;
 
 import org.sprintdragon.ipc.util.NetUtils;
-
 import java.net.InetSocketAddress;
 
 public class Config {
@@ -22,6 +21,10 @@ public class Config {
 	private int payload = 8 * 1024 * 1024;
 	private InetSocketAddress remoteAddress = new InetSocketAddress(
 			"0.0.0.0", 8099);
+
+	public Config(){
+		this(8099);
+	}
 
 	public Config(int port){
 		this("0.0.0.0", port);
@@ -169,53 +172,6 @@ public class Config {
 
 	public void setPayload(int payload) {
 		this.payload = payload;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		Config config = (Config) o;
-
-		if (soLinger != config.soLinger) return false;
-		if (connectTimeout != config.connectTimeout) return false;
-		if (sendTimeout != config.sendTimeout) return false;
-		if (readTimeout != config.readTimeout) return false;
-		if (idleTimeout != config.idleTimeout) return false;
-		if (heartBeatRate != config.heartBeatRate) return false;
-		if (heartBeatTimeout != config.heartBeatTimeout) return false;
-		if (ssl != config.ssl) return false;
-		if (tcpNoDelay != config.tcpNoDelay) return false;
-		if (reuseAddress != config.reuseAddress) return false;
-		if (sendBufferSize != config.sendBufferSize) return false;
-		if (receiveBufferSize != config.receiveBufferSize) return false;
-		if (useEpoll != config.useEpoll) return false;
-		if (childNioEventThreads != config.childNioEventThreads) return false;
-		if (payload != config.payload) return false;
-		return remoteAddress != null ? remoteAddress.equals(config.remoteAddress) : config.remoteAddress == null;
-
-	}
-
-	@Override
-	public int hashCode() {
-		int result = soLinger;
-		result = 31 * result + connectTimeout;
-		result = 31 * result + sendTimeout;
-		result = 31 * result + readTimeout;
-		result = 31 * result + idleTimeout;
-		result = 31 * result + heartBeatRate;
-		result = 31 * result + heartBeatTimeout;
-		result = 31 * result + (ssl ? 1 : 0);
-		result = 31 * result + (tcpNoDelay ? 1 : 0);
-		result = 31 * result + (reuseAddress ? 1 : 0);
-		result = 31 * result + sendBufferSize;
-		result = 31 * result + receiveBufferSize;
-		result = 31 * result + (useEpoll ? 1 : 0);
-		result = 31 * result + childNioEventThreads;
-		result = 31 * result + payload;
-		result = 31 * result + (remoteAddress != null ? remoteAddress.hashCode() : 0);
-		return result;
 	}
 
 	@Override
