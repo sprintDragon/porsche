@@ -131,8 +131,4 @@ public class IpcServer extends AbstractService {
     public Config getConfig() {
         return config;
     }
-
-    public IActionContext getActionContext() {
-        return actionContext;
-    }
 }
