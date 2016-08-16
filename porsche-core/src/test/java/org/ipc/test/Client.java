@@ -1,5 +1,6 @@
 package org.ipc.test;
 
+import org.junit.Test;
 import org.sprintdragon.ipc.Config;
 import org.sprintdragon.ipc.client.ClientProxy;
 
@@ -14,7 +15,8 @@ import java.util.concurrent.Executors;
  */
 public class Client {
 
-    public static void main(String[] args) throws Exception {
+    @Test
+    public void doClient() throws Exception {
         //创建客户连接代理
         final ClientProxy clientProxy = new ClientProxy(new Config( "127.0.0.1" , 10092 ));
         //初始化连接
@@ -65,7 +67,8 @@ public class Client {
                                 Bean2 rs = testAction.test6(new Bean());
                                 System.out.println("test6 结果=" + rs);
                             }
-                            Thread.sleep(500);
+                            //Thread.sleep(500);
+                            break;
                         }
                     }catch (Exception ex){
                         ex.printStackTrace();
@@ -74,6 +77,6 @@ public class Client {
             });
         }
         //关闭客户端连接
-        // clientProxy.close();
+         clientProxy.close();
     }
 }

@@ -1,5 +1,6 @@
 package org.ipc.test;
 
+import org.junit.Test;
 import org.sprintdragon.ipc.Config;
 import org.sprintdragon.ipc.server.IpcRegistry;
 import org.sprintdragon.ipc.server.IpcServer;
@@ -9,7 +10,8 @@ import org.sprintdragon.ipc.server.IpcServer;
  */
 public class Server {
 
-    public static void main(String[] args) throws Exception {
+    @Test
+    public void doServer() throws Exception {
 
         //创建服务
         IpcServer ipcServer = new IpcServer(new Config("127.0.0.1",10092));
@@ -21,6 +23,6 @@ public class Server {
         IpcRegistry ipcRegistry = ipcServer.getIpcRegistry();
         ipcRegistry.registerAction(new TestAction(ITestAction.class));
         //关闭服务
-        //ipcServer.close();
+        ipcServer.close();
     }
 }
