@@ -1,6 +1,6 @@
-package org.sprintdragon.ipc.acton;
+package org.sprintdragon.ipc.server.acton;
 
-import org.sprintdragon.ipc.api.INotification;
+import org.sprintdragon.ipc.server.api.INotification;
 
 public class Notification implements INotification {
 

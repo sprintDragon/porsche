@@ -1,6 +1,7 @@
-package org.sprintdragon.ipc.api;
+package org.sprintdragon.ipc.server.api;
 
 public interface INotifier {
+
 	public INotification sendNotification(String notificationName, Object body,
 										  String type);
 

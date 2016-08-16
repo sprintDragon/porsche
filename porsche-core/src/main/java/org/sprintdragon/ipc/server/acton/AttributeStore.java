@@ -1,8 +1,7 @@
-package org.sprintdragon.ipc.acton;
+package org.sprintdragon.ipc.server.acton;
 
-import org.sprintdragon.ipc.api.IAttributeStore;
-import org.sprintdragon.ipc.api.ICastingAttributeStore;
-
+import org.sprintdragon.ipc.server.api.IAttributeStore;
+import org.sprintdragon.ipc.server.api.ICastingAttributeStore;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

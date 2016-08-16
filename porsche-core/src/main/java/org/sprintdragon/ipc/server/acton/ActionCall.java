@@ -1,9 +1,9 @@
-package org.sprintdragon.ipc.acton;
+package org.sprintdragon.ipc.server.acton;
 
 import org.sprintdragon.ipc.Constants;
 import org.sprintdragon.ipc.Packet;
-import org.sprintdragon.ipc.api.IActionCall;
-import org.sprintdragon.ipc.api.ICallback;
+import org.sprintdragon.ipc.server.api.IActionCall;
+import org.sprintdragon.ipc.server.api.ICallback;
 import java.util.HashSet;
 import java.util.Set;
 import static org.sprintdragon.ipc.Constants.*;

@@ -1,7 +1,5 @@
-package org.sprintdragon.ipc.api;
+package org.sprintdragon.ipc.server.api;
 
-
-import org.sprintdragon.ipc.Packet;
 
 /**
  * 

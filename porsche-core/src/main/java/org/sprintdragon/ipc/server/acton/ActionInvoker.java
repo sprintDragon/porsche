@@ -1,11 +1,11 @@
-package org.sprintdragon.ipc.acton;
+package org.sprintdragon.ipc.server.acton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sprintdragon.ipc.Constants;
-import org.sprintdragon.ipc.api.IActionCall;
-import org.sprintdragon.ipc.api.IActionContext;
-import org.sprintdragon.ipc.api.IActionInvoker;
+import org.sprintdragon.ipc.server.api.IActionCall;
+import org.sprintdragon.ipc.server.api.IActionContext;
+import org.sprintdragon.ipc.server.api.IActionInvoker;
 import org.sprintdragon.ipc.exc.MethodNotFoundException;
 import org.sprintdragon.ipc.exc.NotAllowedException;
 import org.sprintdragon.ipc.util.ConversionUtils;

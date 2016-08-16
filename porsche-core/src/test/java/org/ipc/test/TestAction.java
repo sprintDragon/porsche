@@ -2,14 +2,12 @@ package org.ipc.test;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sprintdragon.ipc.acton.Action;
-import org.sprintdragon.ipc.api.INotification;
-import org.sprintdragon.ipc.client.RemoteProxy;
+import org.sprintdragon.ipc.server.acton.Action;
+import org.sprintdragon.ipc.server.api.INotification;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Created by stereo on 16-8-9.

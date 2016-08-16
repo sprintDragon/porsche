@@ -1,12 +1,8 @@
 package org.ipc.test;
 
 import org.sprintdragon.ipc.Config;
-import org.sprintdragon.ipc.acton.ActionFacade;
-import org.sprintdragon.ipc.api.IActionFacade;
-import org.sprintdragon.ipc.api.IpcEngine;
 import org.sprintdragon.ipc.server.IpcRegistry;
 import org.sprintdragon.ipc.server.IpcServer;
-import org.sprintdragon.service.Service;
 
 /**
  * Created by stereo on 16-8-9.

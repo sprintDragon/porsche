@@ -1,8 +1,8 @@
 package org.sprintdragon.ipc.server;
 
-import org.sprintdragon.ipc.acton.ActionContext;
-import org.sprintdragon.ipc.api.IAction;
-import org.sprintdragon.ipc.api.IActionContext;
+import org.sprintdragon.ipc.server.acton.ActionContext;
+import org.sprintdragon.ipc.server.api.IAction;
+import org.sprintdragon.ipc.server.api.IActionContext;
 
 /**
  * Created by stereo on 16-8-11.

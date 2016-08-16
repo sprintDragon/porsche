@@ -1,8 +1,8 @@
-package org.sprintdragon.ipc.acton;
+package org.sprintdragon.ipc.server.acton;
 
-import org.sprintdragon.ipc.api.IFunction;
-import org.sprintdragon.ipc.api.INotification;
-import org.sprintdragon.ipc.api.IObserver;
+import org.sprintdragon.ipc.server.api.IFunction;
+import org.sprintdragon.ipc.server.api.INotification;
+import org.sprintdragon.ipc.server.api.IObserver;
 
 public class Observer implements IObserver {
 

@@ -1,9 +1,8 @@
-package org.sprintdragon.ipc.acton;
+package org.sprintdragon.ipc.server.acton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sprintdragon.ipc.Packet;
-import org.sprintdragon.ipc.api.*;
+import org.sprintdragon.ipc.server.api.*;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -79,6 +78,7 @@ public class ActionContext extends AttributeStore implements IActionContext,
 				executeAction(notification);
 			}
 		}, this));
+		action.setActionContext(this);
 		action.onRegister();
 	}
 
