@@ -10,10 +10,9 @@ import org.sprintdragon.ipc.server.api.INotification;
  * 
  * @author stereo
  */
-public abstract class Action<T> implements IAction {
+public abstract class Action implements IAction {
 
 	protected String actionName = "actionName";
-
 	protected IActionContext actionContext;
 
 	@Override

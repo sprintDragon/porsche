@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.sprintdragon.ipc.Constants;
 import org.sprintdragon.ipc.Packet;
 import org.sprintdragon.ipc.server.acton.ActionCall;
-import org.sprintdragon.ipc.server.acton.ActionContext;
 import org.sprintdragon.ipc.server.api.*;
 
 /**
@@ -18,10 +17,9 @@ public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements Ip
 
     private static Logger LOG = LoggerFactory.getLogger(IpcEngineHandler.class);
 
-    private IActionContext actionContext;
-
-    public IpcEngineHandler(){
-        actionContext = ActionContext.getInstance();
+    private IActionInvoker invoker;
+    public IpcEngineHandler(IActionInvoker invoker){
+        this.invoker = invoker;
     }
 
     @Override
@@ -59,12 +57,15 @@ public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements Ip
 
     @Override
     public Packet handleRequest(Packet packet) {
-        IActionInvoker actionInvoker = actionContext.getActionInvoker();
-        boolean isSuccess = actionInvoker.invoke(new ActionCall(packet));
+        boolean isSuccess = invoker.invoke(new ActionCall(packet));
         if (!isSuccess)
         {
             LOG.debug("IpcEngine handlePacket is failed packet:" + packet);
         }
         return packet;
+    }
+
+    @Override
+    public void replyResponse(Packet packet) {
     }
 }

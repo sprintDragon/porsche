@@ -7,9 +7,14 @@ import org.sprintdragon.ipc.server.api.IActionContext;
 /**
  * Created by stereo on 16-8-11.
  */
-public abstract class IpcRegistry {
+public class IpcRegistry {
 
-    private IActionContext actionContext = ActionContext.getInstance();
+    private IActionContext actionContext;
+
+    public IpcRegistry(IActionContext actionContext)
+    {
+        this.actionContext = actionContext;
+    }
 
     public void registerAction(IAction action) {
         actionContext.registerAction(action);
@@ -27,8 +32,4 @@ public abstract class IpcRegistry {
         return actionContext.hasAction(actionName);
     }
 
-    private static IpcRegistry registry = new IpcRegistry() {};
-    static IpcRegistry get(){
-        return registry;
-    }
 }

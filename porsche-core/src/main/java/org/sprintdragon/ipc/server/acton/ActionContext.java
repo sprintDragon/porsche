@@ -2,6 +2,7 @@ package org.sprintdragon.ipc.server.acton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sprintdragon.ipc.Config;
 import org.sprintdragon.ipc.server.api.*;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -24,22 +25,31 @@ public class ActionContext extends AttributeStore implements IActionContext,
 	public static Logger logger = LoggerFactory.getLogger(ActionContext.class);
 	private static ThreadLocal<WeakReference<Object>> threadLocal = new ThreadLocal<WeakReference<Object>>();
 
-	private static class ActionContextHolder{
-		private static ActionContext instance = new ActionContext();
+	//	private static class ActionContextHolder{
+	//		private static ActionContext instance = new ActionContext();
+	//	}
+	//
+	//	public static ActionContext getInstance() {
+	//		return ActionContextHolder.instance;
+	//	}
+	//
+	//	private ActionContext() {
+	//		initializeActionContext();
+	//	}
+
+	public ActionContext(Config config) {
+		initializeActionContext(config);
 	}
 
-	private ActionContext() {
-		initializeActionContext();
-	}
-
-	protected void initializeActionContext() {
-		actionInvoker = new ActionInvoker(this);
+	protected void initializeActionContext(Config config) {
+		actionInvoker = new ActionInvoker(
+				this,
+				config.getBusinessPoolSize(),
+				config.getBusinessPoolType(),
+				config.getBusinessPoolQueueSize(),
+				config.getBusinessPoolQueueType());
 		actionMap = new ConcurrentHashMap<String, IAction>();
 		observerMap = new ConcurrentHashMap<String, List<IObserver>>();
-	}
-
-	public static ActionContext getInstance() {
-		return ActionContextHolder.instance;
 	}
 
 	public static Object getObjectLocal() {

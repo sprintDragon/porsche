@@ -3,7 +3,7 @@ package org.sprintdragon.ipc;
 import org.sprintdragon.ipc.util.NetUtils;
 import java.net.InetSocketAddress;
 
-public class Config {
+public final class Config {
 	private int soLinger = -1;
 	private int connectTimeout = 5 * 1000;
 	private int sendTimeout = 5 * 1000;
@@ -21,6 +21,11 @@ public class Config {
 	private int payload = 8 * 1024 * 1024;
 	private InetSocketAddress remoteAddress = new InetSocketAddress(
 			"0.0.0.0", 8099);
+
+	private int businessPoolSize = 200;//业务处理线程
+	private String businessPoolType = Constants.THREADPOOL_TYPE_CACHED;//线程池类型
+	private String businessPoolQueueType = Constants.QUEUE_TYPE_NORMAL;  // 队列类型
+	private int businessPoolQueueSize = 0; // 队列大小
 
 	public Config(){
 		this(8099);
@@ -174,6 +179,38 @@ public class Config {
 		this.payload = payload;
 	}
 
+	public int getBusinessPoolSize() {
+		return businessPoolSize;
+	}
+
+	public String getBusinessPoolType() {
+		return businessPoolType;
+	}
+
+	public String getBusinessPoolQueueType() {
+		return businessPoolQueueType;
+	}
+
+	public int getBusinessPoolQueueSize() {
+		return businessPoolQueueSize;
+	}
+
+	public void setBusinessPoolSize(int businessPoolSize) {
+		this.businessPoolSize = businessPoolSize;
+	}
+
+	public void setBusinessPoolType(String businessPoolType) {
+		this.businessPoolType = businessPoolType;
+	}
+
+	public void setBusinessPoolQueueType(String businessPoolQueueType) {
+		this.businessPoolQueueType = businessPoolQueueType;
+	}
+
+	public void setBusinessPoolQueueSize(int businessPoolQueueSize) {
+		this.businessPoolQueueSize = businessPoolQueueSize;
+	}
+
 	@Override
 	public String toString() {
 		return "Config{" +
@@ -193,6 +230,10 @@ public class Config {
 				", childNioEventThreads=" + childNioEventThreads +
 				", payload=" + payload +
 				", remoteAddress=" + remoteAddress +
+				", businessPoolSize=" + businessPoolSize +
+				", businessPoolType='" + businessPoolType + '\'' +
+				", businessPoolQueueType='" + businessPoolQueueType + '\'' +
+				", businessPoolQueueSize=" + businessPoolQueueSize +
 				'}';
 	}
 }

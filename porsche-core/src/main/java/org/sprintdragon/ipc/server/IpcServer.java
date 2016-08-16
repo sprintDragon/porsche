@@ -18,6 +18,9 @@ import org.sprintdragon.ipc.Config;
 import org.sprintdragon.ipc.codec.MsgPackDecoder;
 import org.sprintdragon.ipc.codec.MsgPackEncoder;
 import org.sprintdragon.ipc.exc.IpcRuntimeException;
+import org.sprintdragon.ipc.server.acton.ActionContext;
+import org.sprintdragon.ipc.server.api.IActionContext;
+import org.sprintdragon.ipc.server.api.IActionInvoker;
 import org.sprintdragon.service.AbstractService;
 
 /**
@@ -28,14 +31,12 @@ public class IpcServer extends AbstractService {
     private static Logger log = LoggerFactory.getLogger(IpcServer.class);
 
     private Config config;
-
-    private ServerBootstrap bootstrap;
-
-    private EventLoopGroup bossGroup;
-
-    private EventLoopGroup workerGroup;
-
     private Channel channel;
+    private ServerBootstrap bootstrap;
+    private EventLoopGroup bossGroup;
+    private EventLoopGroup workerGroup;
+    private IActionContext actionContext;
+    private IpcRegistry registry;
 
     public IpcServer(){
         this(new Config());
@@ -48,6 +49,10 @@ public class IpcServer extends AbstractService {
 
     @Override
     protected void serviceInit() throws Exception {
+        actionContext = new ActionContext(config);
+        registry = new IpcRegistry(actionContext);
+        final IActionInvoker actionInvoker = actionContext.getActionInvoker();
+
         final SslContext sslCtx;
         if (config.isSsl()) {
             SelfSignedCertificate ssc = new SelfSignedCertificate();
@@ -87,7 +92,7 @@ public class IpcServer extends AbstractService {
                         p.addLast(
                                 new MsgPackEncoder(),
                                 new MsgPackDecoder(config.getPayload()),
-                                new IpcEngineHandler()
+                                new IpcEngineHandler(actionInvoker)
                         );
                     }
                 });
@@ -120,10 +125,14 @@ public class IpcServer extends AbstractService {
     }
 
     public IpcRegistry getIpcRegistry(){
-        return IpcRegistry.get();
+        return registry;
     }
 
     public Config getConfig() {
         return config;
+    }
+
+    public IActionContext getActionContext() {
+        return actionContext;
     }
 }

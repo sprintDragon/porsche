@@ -8,6 +8,12 @@ import java.util.Map;
  */
 public final class Constants {
 
+    public final static String QUEUE_TYPE_NORMAL = "normal";
+    public final static String QUEUE_TYPE_PRIORITY = "priority";
+
+    public final static String THREADPOOL_TYPE_FIXED = "fixed";
+    public final static String THREADPOOL_TYPE_CACHED = "cached";
+
     /**
      * packet state
      */
@@ -61,5 +67,4 @@ public final class Constants {
         //primitiveClassMap.put(void.class,"8");
         //primitiveClassMap.put(Void.class,"8");
     }
-
 }

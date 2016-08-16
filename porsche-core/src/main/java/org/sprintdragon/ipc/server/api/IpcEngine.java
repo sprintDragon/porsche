@@ -10,4 +10,6 @@ import org.sprintdragon.ipc.Packet;
 public interface IpcEngine{
 
 	public Packet handleRequest(Packet packet);
+
+	public void replyResponse(Packet packet);
 }
