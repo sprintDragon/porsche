@@ -9,7 +9,7 @@ import org.sprintdragon.ipc.Packet;
  */
 public interface IpcEngine{
 
-	public void handleRequest(Packet packet) throws InterruptedException;
+	public void handleRequest(Packet packet) throws Exception;
 
-	public void replyResponse(Packet packet) throws InterruptedException;
+	public void replyResponse(Packet packet) throws Exception;
 }

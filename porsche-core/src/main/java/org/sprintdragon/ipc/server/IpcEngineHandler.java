@@ -60,7 +60,7 @@ public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements Ip
     }
 
     @Override
-    public void handleRequest(Packet packet) throws InterruptedException {
+    public void handleRequest(Packet packet) throws Exception {
         boolean isSuccess = invoker.invoke(new ActionCall(packet));
         if (!isSuccess)
         {
@@ -70,7 +70,7 @@ public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements Ip
     }
 
     @Override
-    public void replyResponse(Packet packet) throws InterruptedException {
+    public void replyResponse(Packet packet) throws Exception {
         Channel channel = IpcContext.getChannel();
         channel.writeAndFlush(packet).sync();
     }
