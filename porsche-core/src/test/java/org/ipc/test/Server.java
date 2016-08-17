@@ -10,8 +10,8 @@ import org.sprintdragon.ipc.server.IpcServer;
  */
 public class Server {
 
-    @Test
-    public void doServer() throws Exception {
+    //@Test
+    public static void main(String[] params) throws Exception {
 
         //创建服务
         IpcServer ipcServer = new IpcServer(new Config("127.0.0.1",10092));
@@ -23,6 +23,6 @@ public class Server {
         IpcRegistry ipcRegistry = ipcServer.getIpcRegistry();
         ipcRegistry.registerAction(new TestAction(ITestAction.class));
         //关闭服务
-        ipcServer.close();
+        //ipcServer.close();
     }
 }

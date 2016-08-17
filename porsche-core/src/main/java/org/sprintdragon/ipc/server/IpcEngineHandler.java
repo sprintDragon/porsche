@@ -6,6 +6,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sprintdragon.ipc.Constants;
+import org.sprintdragon.ipc.Heartbeat;
 import org.sprintdragon.ipc.Packet;
 import org.sprintdragon.ipc.server.acton.ActionCall;
 import org.sprintdragon.ipc.server.api.*;
@@ -18,13 +19,13 @@ public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements Ip
     private static Logger LOG = LoggerFactory.getLogger(IpcEngineHandler.class);
 
     private IActionInvoker invoker;
-    public IpcEngineHandler(IActionInvoker invoker){
+    public IpcEngineHandler(IActionInvoker invoker) {
         this.invoker = invoker;
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        Channel channel = ctx.channel();
+        IpcContext.begin(msg,ctx);
         if(msg instanceof Packet)
         {
             try {
@@ -32,21 +33,24 @@ public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements Ip
                 switch (packet.getType())
                 {
                     case Constants.TYPE_REQUEST:
-                        packet = handleRequest(packet);
-                        channel.writeAndFlush(packet).sync();
+                        handleRequest(packet);
                         break;
                     case Constants.TYPE_RESPONSE:
                         break;
                     default:
                         break;
                 }
-            } catch (Exception e) {
-                LOG.error("IpcEngineHandler.handle packet is " + msg + " error");
-                e.printStackTrace();
+            } catch (Exception e)
+            {
+                LOG.error("IpcEngineHandler.handle packet is " + msg + " error",e);
             }
+        }else if (msg instanceof Heartbeat)
+        {
+
         }
         else
             LOG.error("IpcEngineHandler.channelRead error msg is " + msg);
+        IpcContext.end();
     }
 
     @Override
@@ -56,16 +60,18 @@ public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements Ip
     }
 
     @Override
-    public Packet handleRequest(Packet packet) {
+    public void handleRequest(Packet packet) throws InterruptedException {
         boolean isSuccess = invoker.invoke(new ActionCall(packet));
         if (!isSuccess)
         {
             LOG.debug("IpcEngine handlePacket is failed packet:" + packet);
-        }
-        return packet;
+        }else
+            replyResponse(packet);
     }
 
     @Override
-    public void replyResponse(Packet packet) {
+    public void replyResponse(Packet packet) throws InterruptedException {
+        Channel channel = IpcContext.getChannel();
+        channel.writeAndFlush(packet).sync();
     }
 }
