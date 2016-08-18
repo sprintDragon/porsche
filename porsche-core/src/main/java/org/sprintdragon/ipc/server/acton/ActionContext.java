@@ -2,14 +2,18 @@ package org.sprintdragon.ipc.server.acton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.concurrent.ConcurrentHashMap;
+import org.sprintdragon.event.AsyncDispatcher;
+import org.sprintdragon.event.Dispatcher;
+import org.sprintdragon.event.EventHandler;
 import org.sprintdragon.ipc.Config;
+import org.sprintdragon.ipc.Constants;
 import org.sprintdragon.ipc.server.api.*;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 控制层上下文
@@ -19,37 +23,23 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ActionContext extends AttributeStore implements IActionContext,
 		Iterable<IAction> {
 
-	protected IActionInvoker actionInvoker;
+	private Dispatcher dispatcher;
+	private IActionHandler actionHandler;
 	protected Map<String, IAction> actionMap;
 	protected Map<String, List<IObserver>> observerMap;
 	public static Logger logger = LoggerFactory.getLogger(ActionContext.class);
 	private static ThreadLocal<WeakReference<Object>> threadLocal = new ThreadLocal<WeakReference<Object>>();
-
-	//	private static class ActionContextHolder{
-	//		private static ActionContext instance = new ActionContext();
-	//	}
-	//
-	//	public static ActionContext getInstance() {
-	//		return ActionContextHolder.instance;
-	//	}
-	//
-	//	private ActionContext() {
-	//		initializeActionContext();
-	//	}
 
 	public ActionContext(Config config) {
 		initializeActionContext(config);
 	}
 
 	protected void initializeActionContext(Config config) {
-		actionInvoker = new ActionInvoker(
-				this,
-				config.getBusinessPoolSize(),
-				config.getBusinessPoolType(),
-				config.getBusinessPoolQueueSize(),
-				config.getBusinessPoolQueueType());
+		dispatcher = new AsyncDispatcher();
+		actionHandler = new ActionHandler(this,config);
 		actionMap = new ConcurrentHashMap<String, IAction>();
 		observerMap = new ConcurrentHashMap<String, List<IObserver>>();
+		dispatcher.register(Constants.ActionEnum.class, (EventHandler) actionHandler);
 	}
 
 	public static Object getObjectLocal() {
@@ -159,7 +149,13 @@ public class ActionContext extends AttributeStore implements IActionContext,
 		return actionMap.values().iterator();
 	}
 
-	public IActionInvoker getActionInvoker() {
-		return actionInvoker;
+	@Override
+	public IActionHandler getActionHandler() {
+		return actionHandler;
+	}
+
+	@Override
+	public Dispatcher getDispatcher() {
+		return dispatcher;
 	}
 }

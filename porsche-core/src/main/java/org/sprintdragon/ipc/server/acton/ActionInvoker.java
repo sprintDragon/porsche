@@ -56,64 +56,10 @@ public final class ActionInvoker implements IActionInvoker{
 	}
 
 	private IActionContext servicer;
-	private ExecutorService invokerPool;
 	private Set<MethodCache> methodCaches = new CopyOnWriteArraySet<MethodCache>();
 
-	public void initInvokerPool(int poolSize, String poolType, int queueSize, String queueType){
-		int minPoolSize;
-		int aliveTime;
-		int maxPoolSize = poolSize;
-		if (Constants.THREADPOOL_TYPE_FIXED.equals(poolType)) {
-			minPoolSize = maxPoolSize;
-			aliveTime = 0;
-		} else if (Constants.THREADPOOL_TYPE_CACHED.equals(poolType)) {
-			minPoolSize = 20;
-			maxPoolSize = Math.max(minPoolSize, maxPoolSize);
-			aliveTime = 60000;
-		} else {
-			throw new IpcRuntimeException("InvokerPool-"+ poolType);
-		}
-
-		boolean isPriority = Constants.QUEUE_TYPE_PRIORITY.equals(queueType);
-		BlockingQueue<Runnable> configQueue = ThreadPoolUtils.buildQueue(queueSize, isPriority);
-
-		Daemon.DaemonFactory threadFactory = new Daemon.DaemonFactory();
-		RejectedExecutionHandler handler = new RejectedExecutionHandler() {
-			private int i = 1;
-			@Override
-			public void rejectedExecution(Runnable runnable, ThreadPoolExecutor executor) {
-				if (i++ % 7 == 0)
-				{
-					i = 1;
-					LOG.warn("Task:{} has been reject for InvokerPool exhausted!" +
-									" pool:{}, active:{}, queue:{}, taskcnt: {}",
-							new Object[]{
-									runnable,
-									executor.getPoolSize(),
-									executor.getActiveCount(),
-									executor.getQueue().size(),
-									executor.getTaskCount()
-							});
-				}
-				throw new RejectedExecutionException("Biz thread pool of provider has bean exhausted");
-			}
-		};
-		LOG.debug("Build " + poolType + " business pool "
-				+ " [min: " + minPoolSize
-				+ " max:" + maxPoolSize
-				+ " queueType:" + queueType
-				+ " queueSize:" + queueSize
-				+ " aliveTime:" + aliveTime
-				+ "]");
-		invokerPool = new ThreadPoolExecutor(minPoolSize, maxPoolSize,
-				aliveTime, TimeUnit.MILLISECONDS,
-				configQueue, threadFactory, handler);
-
-	}
-
-	public ActionInvoker(IActionContext servicer,int poolSize,String poolType,int queueSize , String queueType) {
+	public ActionInvoker(IActionContext servicer) {
 		this.servicer = servicer;
-		initInvokerPool(poolSize,poolType,queueSize,queueType);
 	}
 
 	@Override

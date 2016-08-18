@@ -1,6 +1,8 @@
 package org.sprintdragon.ipc.server.api;
 
 
+import org.sprintdragon.event.Dispatcher;
+
 /**
  * 
  * Action控制器上下文
@@ -71,5 +73,7 @@ public interface IActionContext {
 	 */
 	public boolean hasAction(String actionName);
 
-	public IActionInvoker getActionInvoker();
+	public IActionHandler getActionHandler();
+
+	public Dispatcher getDispatcher();
 }

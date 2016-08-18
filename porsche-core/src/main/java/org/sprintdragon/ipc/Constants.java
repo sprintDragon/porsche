@@ -67,4 +67,8 @@ public final class Constants {
         //primitiveClassMap.put(void.class,"8");
         //primitiveClassMap.put(Void.class,"8");
     }
+
+    public enum ActionEnum {
+        REQUEST,RESPONSE,HEARTBEAT
+    }
 }

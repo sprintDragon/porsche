@@ -5,11 +5,15 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sprintdragon.event.Dispatcher;
 import org.sprintdragon.ipc.Constants;
 import org.sprintdragon.ipc.Heartbeat;
 import org.sprintdragon.ipc.Packet;
 import org.sprintdragon.ipc.server.acton.ActionCall;
 import org.sprintdragon.ipc.server.api.*;
+import org.sprintdragon.ipc.server.event.HeartbeatEvent;
+import org.sprintdragon.ipc.server.event.RequestEvent;
+import org.sprintdragon.ipc.server.event.ResponseEvent;
 
 /**
  * Created by stereo on 16-8-9.
@@ -18,38 +22,35 @@ public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements Ip
 
     private static Logger LOG = LoggerFactory.getLogger(IpcEngineHandler.class);
 
-    private IActionInvoker invoker;
-    public IpcEngineHandler(IActionInvoker invoker) {
-        this.invoker = invoker;
+    private Dispatcher dispatcher;
+    public IpcEngineHandler(Dispatcher dispatcher) {
+        this.dispatcher = dispatcher;
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         IpcContext.begin(msg,ctx);
-        if(msg instanceof Packet)
-        {
-            try {
-                Packet packet = (Packet) msg;
-                switch (packet.getType())
-                {
-                    case Constants.TYPE_REQUEST:
-                        handleRequest(packet);
-                        break;
-                    case Constants.TYPE_RESPONSE:
-                        break;
-                    default:
-                        break;
-                }
-            } catch (Exception e)
+        try {
+            if(msg instanceof Packet)
             {
-                LOG.error("IpcEngineHandler.handle packet is " + msg + " error",e);
+                final Packet packet = (Packet) msg;
+                if (packet.getType() == Constants.TYPE_REQUEST)
+                    dispatcher.getEventHandler().handle(new RequestEvent(packet,ctx));
+                else if (packet.getType() == Constants.TYPE_RESPONSE)
+                    dispatcher.getEventHandler().handle(new ResponseEvent(packet,ctx));
+                else
+                    LOG.error("IpcEngineHandler.channelRead error msg is " + msg);
+            }else if (msg instanceof Heartbeat)
+            {
+                Heartbeat heartbeat = (Heartbeat) msg;
+                dispatcher.getEventHandler().handle(new HeartbeatEvent(heartbeat,ctx));
             }
-        }else if (msg instanceof Heartbeat)
+            else
+                LOG.error("IpcEngineHandler.channelRead error msg is " + msg);
+        } catch (Exception e)
         {
-
+            LOG.error("IpcEngineHandler.handle packet is " + msg + " error",e);
         }
-        else
-            LOG.error("IpcEngineHandler.channelRead error msg is " + msg);
         IpcContext.end();
     }
 
@@ -57,21 +58,5 @@ public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements Ip
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         LOG.error("IpcEngineHandler.exceptionCaught",cause);
         ctx.close();
-    }
-
-    @Override
-    public void handleRequest(Packet packet) throws Exception {
-        boolean isSuccess = invoker.invoke(new ActionCall(packet));
-        if (!isSuccess)
-        {
-            LOG.debug("IpcEngine handlePacket is failed packet:" + packet);
-        }else
-            replyResponse(packet);
-    }
-
-    @Override
-    public void replyResponse(Packet packet) throws Exception {
-        Channel channel = IpcContext.getChannel();
-        channel.writeAndFlush(packet).sync();
     }
 }
