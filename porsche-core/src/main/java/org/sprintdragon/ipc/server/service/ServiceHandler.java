@@ -1,4 +1,4 @@
-package org.sprintdragon.ipc.server.acton;
+package org.sprintdragon.ipc.server.service;
 
 import io.netty.channel.Channel;
 import org.slf4j.Logger;

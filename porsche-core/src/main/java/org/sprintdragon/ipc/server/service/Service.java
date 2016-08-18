@@ -1,4 +1,4 @@
-package org.sprintdragon.ipc.server.acton;
+package org.sprintdragon.ipc.server.service;
 
 
 import org.sprintdragon.ipc.server.api.IService;

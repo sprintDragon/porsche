@@ -1,4 +1,4 @@
-package org.sprintdragon.ipc.server.acton;
+package org.sprintdragon.ipc.server.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

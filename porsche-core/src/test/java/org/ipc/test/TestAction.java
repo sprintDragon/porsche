@@ -2,7 +2,7 @@ package org.ipc.test;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sprintdragon.ipc.server.acton.Service;
+import org.sprintdragon.ipc.server.service.Service;
 import org.sprintdragon.ipc.server.api.INotification;
 
 import java.util.HashMap;

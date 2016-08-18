@@ -19,7 +19,7 @@ import org.sprintdragon.ipc.Config;
 import org.sprintdragon.ipc.codec.MsgPackDecoder;
 import org.sprintdragon.ipc.codec.MsgPackEncoder;
 import org.sprintdragon.ipc.exc.IpcRuntimeException;
-import org.sprintdragon.ipc.server.acton.ServiceContext;
+import org.sprintdragon.ipc.server.service.ServiceContext;
 import org.sprintdragon.ipc.server.api.IServiceContext;
 import org.sprintdragon.service.AbstractService;
 import org.sprintdragon.service.Service;
