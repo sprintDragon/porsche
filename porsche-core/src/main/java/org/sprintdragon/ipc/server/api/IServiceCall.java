@@ -6,7 +6,7 @@ import java.util.Set;
  * @author stereo
  * @version 2013.12.19
  */
-public interface IActionCall {
+public interface IServiceCall {
 
 	public abstract String getId();
 

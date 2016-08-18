@@ -1,6 +1,5 @@
 package org.ipc.test;
 
-import org.junit.Test;
 import org.sprintdragon.ipc.Config;
 import org.sprintdragon.ipc.client.ClientProxy;
 
@@ -32,7 +31,7 @@ public class Client {
                 public void run() {
                     try {
                         //创建代理接口
-                        ITestAction testAction = clientProxy.create(ITestAction.class);
+                        ITestService testAction = clientProxy.create(ITestService.class);
                         while (true)
                         {
                             //调用服务接口
@@ -77,6 +76,6 @@ public class Client {
             });
         }
         //关闭客户端连接
-        // clientProxy.close();
+         //clientProxy.close();
     }
 }

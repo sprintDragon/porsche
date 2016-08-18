@@ -8,13 +8,13 @@ package org.sprintdragon.ipc.server.api;
  * @version 2013.12.19
  * 
  */
-public interface IActionInvoker {
+public interface IServiceInvoker {
 
 	public static final String BEAN_NAME = "serviceInvoker";
 
 	Object getService(String serviceName);
 
-	boolean invoke(IActionCall call);
+	boolean invoke(IServiceCall call);
 
-	boolean invoke(IActionCall call, Object service);
+	boolean invoke(IServiceCall call, Object service);
 }

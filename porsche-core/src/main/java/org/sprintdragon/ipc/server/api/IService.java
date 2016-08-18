@@ -5,7 +5,7 @@ package org.sprintdragon.ipc.server.api;
  * 
  * @author stereo
  */
-public interface IAction extends INotifier {
+public interface IService extends INotifier {
 
 	public void onRemove();
 
@@ -13,9 +13,9 @@ public interface IAction extends INotifier {
 
 	public String getActionName();
 
-	public IAction resolveAction(String actionName);
+	public IService resolveAction(String actionName);
 
 	public void handleNotification(INotification notification);
 
-	public void setActionContext(IActionContext actionContext);
+	public void setActionContext(IServiceContext actionContext);
 }

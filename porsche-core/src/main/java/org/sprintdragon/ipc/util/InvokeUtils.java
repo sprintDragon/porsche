@@ -2,7 +2,7 @@ package org.sprintdragon.ipc.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sprintdragon.ipc.server.api.IActionCall;
+import org.sprintdragon.ipc.server.api.IServiceCall;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -100,8 +100,8 @@ public class InvokeUtils {
 				method = methods.get(i);
 				params = ConversionUtils.convertParams(args,
 						method.getParameterTypes());
-				if (args.length > 0 && (args[0] instanceof IActionCall)
-						&& (!(params[0] instanceof IActionCall))) {
+				if (args.length > 0 && (args[0] instanceof IServiceCall)
+						&& (!(params[0] instanceof IServiceCall))) {
 					continue;
 				}
 				return new Object[] { method, params };
@@ -170,8 +170,8 @@ public class InvokeUtils {
 				params = ConversionUtils.convertParams(args,
 						method.getParameterTypes());
 				if (argsList.size() > 0
-						&& (argsList.get(0) instanceof IActionCall)
-						&& (!(params[0] instanceof IActionCall))) {
+						&& (argsList.get(0) instanceof IServiceCall)
+						&& (!(params[0] instanceof IServiceCall))) {
 					continue;
 				}
 				return new Object[] { method, params };

@@ -3,16 +3,14 @@ package org.sprintdragon.ipc.server.acton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sprintdragon.ipc.Constants;
-import org.sprintdragon.ipc.exc.IpcRuntimeException;
-import org.sprintdragon.ipc.server.api.IActionCall;
-import org.sprintdragon.ipc.server.api.IActionContext;
-import org.sprintdragon.ipc.server.api.IActionInvoker;
+import org.sprintdragon.ipc.server.api.IServiceCall;
+import org.sprintdragon.ipc.server.api.IServiceContext;
+import org.sprintdragon.ipc.server.api.IServiceInvoker;
 import org.sprintdragon.ipc.exc.MethodNotFoundException;
 import org.sprintdragon.ipc.exc.NotAllowedException;
 import org.sprintdragon.ipc.util.ConversionUtils;
-import org.sprintdragon.ipc.util.Daemon;
 import org.sprintdragon.ipc.util.InvokeUtils;
-import org.sprintdragon.ipc.util.ThreadPoolUtils;
+
 import javax.management.ServiceNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -28,9 +26,9 @@ import java.util.concurrent.*;
  * @version 2013.12.21
  * @see匹配函数、支持函数重载、没有匹配到函数自动找重载String类型
  */
-public final class ActionInvoker implements IActionInvoker{
+public final class ServiceInvoker implements IServiceInvoker {
 
-	private static Logger LOG = LoggerFactory.getLogger(ActionInvoker.class);
+	private static Logger LOG = LoggerFactory.getLogger(ServiceInvoker.class);
 
 	private static class MethodCache {
 		private String methodName;
@@ -55,10 +53,10 @@ public final class ActionInvoker implements IActionInvoker{
 		}
 	}
 
-	private IActionContext servicer;
+	private IServiceContext servicer;
 	private Set<MethodCache> methodCaches = new CopyOnWriteArraySet<MethodCache>();
 
-	public ActionInvoker(IActionContext servicer) {
+	public ServiceInvoker(IServiceContext servicer) {
 		this.servicer = servicer;
 	}
 
@@ -74,7 +72,7 @@ public final class ActionInvoker implements IActionInvoker{
 	 * @return
 	 */
 	@Override
-	public boolean invoke(IActionCall call) {
+	public boolean invoke(IServiceCall call) {
 		return invoke(call, getService(call.getInterfaceName()));
 	}
 
@@ -86,7 +84,7 @@ public final class ActionInvoker implements IActionInvoker{
 	 * @return
 	 */
 	@Override
-	public boolean invoke(IActionCall call, Object service) {
+	public boolean invoke(IServiceCall call, Object service) {
 		if (service == null) {
 			String interfaceName = call.getInterfaceName();
 			call.setException(new ServiceNotFoundException(interfaceName));
@@ -166,7 +164,7 @@ public final class ActionInvoker implements IActionInvoker{
 			try {
 				LOG.debug("Invoking method: ", method.toString());
 				// if (method.getReturnType() != call.getReturnType()) {
-				// call.setStatus(IActionCall.STATUS_METHOD_NOT_FOUND);
+				// call.setStatus(IServiceCall.STATUS_METHOD_NOT_FOUND);
 				// call.setException(new MethodNotFoundException(methodName
 				// + " not match "));
 				// return false;

@@ -2,8 +2,9 @@ package org.sprintdragon.ipc.server.acton;
 
 import org.sprintdragon.ipc.Constants;
 import org.sprintdragon.ipc.Packet;
-import org.sprintdragon.ipc.server.api.IActionCall;
+import org.sprintdragon.ipc.server.api.IServiceCall;
 import org.sprintdragon.ipc.server.api.ICallback;
+
 import java.util.HashSet;
 import java.util.Set;
 import static org.sprintdragon.ipc.Constants.*;
@@ -11,7 +12,7 @@ import static org.sprintdragon.ipc.Constants.*;
 /**
  * @author stereo
  */
-public class ActionCall implements IActionCall {
+public class ServiceCall implements IServiceCall {
 
 	protected String id; // ID
 
@@ -33,10 +34,10 @@ public class ActionCall implements IActionCall {
 
 	private HashSet<ICallback> callbacks = new HashSet<ICallback>(); // 回调接口(可选)
 
-	public ActionCall() {
+	public ServiceCall() {
 	}
 
-	public ActionCall(Packet packet) {
+	public ServiceCall(Packet packet) {
 		this.packet = packet;
 		this.id = packet.getId();
 		this.status = packet.getState();

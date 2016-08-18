@@ -160,7 +160,7 @@ public class RemoteProxy implements InvocationHandler {
             case STATUS_SUCCESS_VOID:
                 return null;
             case STATUS_SERVICE_NOT_FOUND:
-                exc = "ClientProxy >>> request Action is not found";
+                exc = "ClientProxy >>> request Service is not found";
                 break;
             case STATUS_METHOD_NOT_FOUND:
                 exc = "ClientProxy >>> request action method is not found";

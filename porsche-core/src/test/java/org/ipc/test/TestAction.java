@@ -2,7 +2,7 @@ package org.ipc.test;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sprintdragon.ipc.server.acton.Action;
+import org.sprintdragon.ipc.server.acton.Service;
 import org.sprintdragon.ipc.server.api.INotification;
 
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by stereo on 16-8-9.
  */
-public class TestAction extends Action implements ITestAction{
+public class TestAction extends Service implements ITestService {
     private static Logger LOG = LoggerFactory.getLogger(TestAction.class);
 
     public TestAction(Class<?> cls) {

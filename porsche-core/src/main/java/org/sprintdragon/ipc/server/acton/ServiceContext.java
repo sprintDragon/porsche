@@ -9,6 +9,9 @@ import org.sprintdragon.event.EventHandler;
 import org.sprintdragon.ipc.Config;
 import org.sprintdragon.ipc.Constants;
 import org.sprintdragon.ipc.server.api.*;
+import org.sprintdragon.service.AbstractService;
+import org.sprintdragon.service.Service;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,26 +23,54 @@ import java.util.Map;
  * 
  * @author stereo
  */
-public class ActionContext extends AttributeStore implements IActionContext,
-		Iterable<IAction> {
-
+public class ServiceContext extends AbstractService implements IServiceContext,
+		Iterable<IService> {
+	private Config config;
 	private Dispatcher dispatcher;
-	private IActionHandler actionHandler;
-	protected Map<String, IAction> actionMap;
+	private IServiceHandler actionHandler;
+	protected Map<String, IService> actionMap;
 	protected Map<String, List<IObserver>> observerMap;
-	public static Logger logger = LoggerFactory.getLogger(ActionContext.class);
+	public static Logger logger = LoggerFactory.getLogger(ServiceContext.class);
 	private static ThreadLocal<WeakReference<Object>> threadLocal = new ThreadLocal<WeakReference<Object>>();
 
-	public ActionContext(Config config) {
-		initializeActionContext(config);
+	public ServiceContext(Config config) {
+		super("ServiceContext");
+		this.config = config;
 	}
 
-	protected void initializeActionContext(Config config) {
-		dispatcher = new AsyncDispatcher();
-		actionHandler = new ActionHandler(this,config);
-		actionMap = new ConcurrentHashMap<String, IAction>();
+	@Override
+	protected void serviceInit() throws Exception {
+		actionMap = new ConcurrentHashMap<String, IService>();
 		observerMap = new ConcurrentHashMap<String, List<IObserver>>();
+
+		//事件处理器
+		dispatcher = new AsyncDispatcher();
+		((Service)dispatcher).init();
+
+		//业务处理器
+		actionHandler = new ServiceHandler(this,config);
+		((Service)actionHandler).init();
+
 		dispatcher.register(Constants.ActionEnum.class, (EventHandler) actionHandler);
+	}
+
+	@Override
+	protected void serviceStart() throws Exception {
+		if (dispatcher!=null)
+			((Service)dispatcher).start();
+
+		if (actionHandler!=null)
+			((Service)actionHandler).start();
+	}
+
+	@Override
+	protected void serviceStop() throws Exception {
+		if (dispatcher!=null)
+			((Service)dispatcher).stop();
+
+		if (actionHandler!=null)
+			((Service)actionHandler).stop();
+
 	}
 
 	public static Object getObjectLocal() {
@@ -61,14 +92,14 @@ public class ActionContext extends AttributeStore implements IActionContext,
 
 	@Override
 	public void executeAction(INotification note) {
-		IAction actionInstance = this.actionMap.get(note.getName());
+		IService actionInstance = this.actionMap.get(note.getName());
 		if (actionInstance != null) {
 			actionInstance.handleNotification(note);
 		}
 	}
 
 	@Override
-	public void registerAction(final IAction action) {
+	public void registerAction(final IService action) {
 		if (this.actionMap.containsKey(action.getActionName()))
 			return;
 		this.actionMap.put(action.getActionName(), action);
@@ -83,19 +114,19 @@ public class ActionContext extends AttributeStore implements IActionContext,
 	}
 
 	@Override
-	public IAction retrieveAction(String actionName) {
+	public IService retrieveAction(String actionName) {
 		if (null != actionMap.get(actionName)) {
 			return this.actionMap.get(actionName);
 		}
-		for (IAction action : this)
+		for (IService action : this)
 			return action.resolveAction(actionName);
 		return null;
 	}
 
 	@Override
-	public IAction removeAction(String actionName) {
+	public IService removeAction(String actionName) {
 		if (hasAction(actionName)) {
-			IAction action = actionMap.get(actionName);
+			IService action = actionMap.get(actionName);
 			removeObserver(actionName, this);
 			actionMap.remove(actionName);
 			action.onRemove();
@@ -145,12 +176,12 @@ public class ActionContext extends AttributeStore implements IActionContext,
 	}
 
 	@Override
-	public Iterator<IAction> iterator() {
+	public Iterator<IService> iterator() {
 		return actionMap.values().iterator();
 	}
 
 	@Override
-	public IActionHandler getActionHandler() {
+	public IServiceHandler getActionHandler() {
 		return actionHandler;
 	}
 

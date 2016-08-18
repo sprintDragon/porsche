@@ -9,7 +9,7 @@ import org.sprintdragon.event.Dispatcher;
  * 
  * @author stereo
  */
-public interface IActionContext {
+public interface IServiceContext {
 
 	/**
 	 * 
@@ -40,7 +40,7 @@ public interface IActionContext {
 	 * 
 	 * @param action
 	 */
-	public void registerAction(IAction action);
+	public void registerAction(IService action);
 
 	/**
 	 * 检索Action
@@ -48,7 +48,7 @@ public interface IActionContext {
 	 * @param actionName
 	 * @return
 	 */
-	public IAction retrieveAction(String actionName);
+	public IService retrieveAction(String actionName);
 
 	/**
 	 * 执行Action
@@ -63,7 +63,7 @@ public interface IActionContext {
 	 * @param actionName
 	 * @return
 	 */
-	public IAction removeAction(String actionName);
+	public IService removeAction(String actionName);
 
 	/**
 	 * 是否有actionName的Action
@@ -73,7 +73,7 @@ public interface IActionContext {
 	 */
 	public boolean hasAction(String actionName);
 
-	public IActionHandler getActionHandler();
+	public IServiceHandler getActionHandler();
 
 	public Dispatcher getDispatcher();
 }

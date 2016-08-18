@@ -14,19 +14,15 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sprintdragon.event.AsyncDispatcher;
 import org.sprintdragon.event.Dispatcher;
-import org.sprintdragon.event.EventHandler;
 import org.sprintdragon.ipc.Config;
-import org.sprintdragon.ipc.Constants;
 import org.sprintdragon.ipc.codec.MsgPackDecoder;
 import org.sprintdragon.ipc.codec.MsgPackEncoder;
 import org.sprintdragon.ipc.exc.IpcRuntimeException;
-import org.sprintdragon.ipc.server.acton.ActionContext;
-import org.sprintdragon.ipc.server.api.IActionContext;
-import org.sprintdragon.ipc.server.api.IActionHandler;
-import org.sprintdragon.ipc.server.api.IActionInvoker;
+import org.sprintdragon.ipc.server.acton.ServiceContext;
+import org.sprintdragon.ipc.server.api.IServiceContext;
 import org.sprintdragon.service.AbstractService;
+import org.sprintdragon.service.Service;
 
 /**
  * Created by stereo on 16-8-4.
@@ -40,8 +36,7 @@ public class IpcServer extends AbstractService {
     private ServerBootstrap bootstrap;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
-    private IActionContext actionContext;
-    private Dispatcher dispatcher;
+    private IServiceContext actionContext;
     private IpcRegistry registry;
 
     public IpcServer(){
@@ -55,8 +50,9 @@ public class IpcServer extends AbstractService {
 
     @Override
     protected void serviceInit() throws Exception {
-        actionContext = new ActionContext(config);
-        dispatcher = actionContext.getDispatcher();
+        actionContext = new ServiceContext(config);
+        ((Service)actionContext).init();
+
         registry = new IpcRegistry(actionContext);
 
         final SslContext sslCtx;
@@ -98,7 +94,7 @@ public class IpcServer extends AbstractService {
                         p.addLast(
                                 new MsgPackEncoder(),
                                 new MsgPackDecoder(config.getPayload()),
-                                new IpcEngineHandler(dispatcher)
+                                new IpcEngineHandler(actionContext.getDispatcher())
                         );
                     }
                 });
@@ -106,20 +102,21 @@ public class IpcServer extends AbstractService {
 
     @Override
     protected void serviceStart() throws Exception {
-        if (dispatcher!=null)
-            dispatcher.serviceStart();
-        if (bootstrap!=null)
+
+        if (bootstrap!=null && actionContext!=null)
+        {
+            ((Service)actionContext).start();
             channel = bootstrap.bind(config.getHost(),config.getPort()).sync().channel();
+        }
         else
             throw new IpcRuntimeException("IpcServer is not inited");
     }
 
     @Override
     protected void serviceStop() throws Exception {
-        if (dispatcher!=null)
-            dispatcher.serviceStop();
-        if(bootstrap!=null && channel!=null && bossGroup!=null && workerGroup!=null)
+        if(actionContext!=null && bootstrap!=null && channel!=null && bossGroup!=null && workerGroup!=null)
         {
+            ((Service)actionContext).stop();
             channel.close().sync();
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
@@ -140,7 +137,11 @@ public class IpcServer extends AbstractService {
         return config;
     }
 
+    public IServiceContext getActionContext() {
+        return actionContext;
+    }
+
     public Dispatcher getDispatcher() {
-        return dispatcher;
+        return actionContext!=null?actionContext.getDispatcher() : null;
     }
 }

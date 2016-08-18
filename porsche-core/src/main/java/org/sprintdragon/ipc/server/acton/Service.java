@@ -1,8 +1,8 @@
 package org.sprintdragon.ipc.server.acton;
 
 
-import org.sprintdragon.ipc.server.api.IAction;
-import org.sprintdragon.ipc.server.api.IActionContext;
+import org.sprintdragon.ipc.server.api.IService;
+import org.sprintdragon.ipc.server.api.IServiceContext;
 import org.sprintdragon.ipc.server.api.INotification;
 
 /**
@@ -10,10 +10,10 @@ import org.sprintdragon.ipc.server.api.INotification;
  * 
  * @author stereo
  */
-public abstract class Action implements IAction {
+public abstract class Service implements IService {
 
 	protected String actionName = "actionName";
-	protected IActionContext actionContext;
+	protected IServiceContext actionContext;
 
 	@Override
 	public void onRegister() {
@@ -28,12 +28,12 @@ public abstract class Action implements IAction {
 		return actionName;
 	}
 
-	public Action(Class<?> cls) {
+	public Service(Class<?> cls) {
 		this.actionName = cls.getName();
 	}
 
 	@Override
-	public IAction resolveAction(String actionName) {
+	public IService resolveAction(String actionName) {
 		if (this.actionName.equals(actionName))
 			return this;
 		return null;
@@ -58,7 +58,7 @@ public abstract class Action implements IAction {
 		return sendNotification(notificationName,null,null);
 	}
 
-	public void setActionContext(IActionContext actionContext) {
+	public void setActionContext(IServiceContext actionContext) {
 		this.actionContext = actionContext;
 	}
 }

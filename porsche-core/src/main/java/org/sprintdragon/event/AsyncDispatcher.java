@@ -8,8 +8,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sprintdragon.service.AbstractService;
 
-public class AsyncDispatcher implements Dispatcher {
+public class AsyncDispatcher extends AbstractService implements Dispatcher {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(AsyncDispatcher.class);
@@ -35,6 +36,7 @@ public class AsyncDispatcher implements Dispatcher {
 	}
 
 	public AsyncDispatcher(BlockingQueue<Event> eventQueue) {
+		super("AsyncDispatcher");
 		this.eventQueue = eventQueue;
 		this.eventDispatchers = new HashMap<Class<? extends Enum>, EventHandler>();
 	}
@@ -61,6 +63,10 @@ public class AsyncDispatcher implements Dispatcher {
 		};
 	}
 
+
+	@Override
+	protected void serviceInit() throws Exception {
+	}
 
 	public void serviceStart() throws Exception {
 		eventHandlingThread = new Thread(createThread());

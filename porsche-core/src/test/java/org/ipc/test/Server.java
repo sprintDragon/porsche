@@ -1,6 +1,5 @@
 package org.ipc.test;
 
-import org.junit.Test;
 import org.sprintdragon.ipc.Config;
 import org.sprintdragon.ipc.server.IpcRegistry;
 import org.sprintdragon.ipc.server.IpcServer;
@@ -21,7 +20,7 @@ public class Server {
         ipcServer.start();
         //注册接口
         IpcRegistry ipcRegistry = ipcServer.getIpcRegistry();
-        ipcRegistry.registerAction(new TestAction(ITestAction.class));
+        ipcRegistry.registerAction(new TestAction(ITestService.class));
         //关闭服务
         //ipcServer.close();
     }

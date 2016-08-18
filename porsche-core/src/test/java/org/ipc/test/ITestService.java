@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Created by stereo on 16-8-9.
  */
-public interface ITestAction {
+public interface ITestService {
 
     public Bean test1(Bean bean);
 

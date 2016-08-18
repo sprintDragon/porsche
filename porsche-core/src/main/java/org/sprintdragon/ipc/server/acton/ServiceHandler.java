@@ -1,43 +1,50 @@
 package org.sprintdragon.ipc.server.acton;
 
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sprintdragon.event.Event;
 import org.sprintdragon.event.EventHandler;
 import org.sprintdragon.ipc.Config;
 import org.sprintdragon.ipc.Constants;
-import org.sprintdragon.ipc.Heartbeat;
-import org.sprintdragon.ipc.Packet;
 import org.sprintdragon.ipc.exc.IpcRuntimeException;
-import org.sprintdragon.ipc.server.IpcContext;
-import org.sprintdragon.ipc.server.api.IActionContext;
-import org.sprintdragon.ipc.server.api.IActionHandler;
-import org.sprintdragon.ipc.server.api.IActionInvoker;
+import org.sprintdragon.ipc.server.api.IServiceContext;
+import org.sprintdragon.ipc.server.api.IServiceHandler;
+import org.sprintdragon.ipc.server.api.IServiceInvoker;
 import org.sprintdragon.ipc.server.event.HeartbeatEvent;
 import org.sprintdragon.ipc.server.event.RequestEvent;
 import org.sprintdragon.ipc.server.event.ResponseEvent;
 import org.sprintdragon.ipc.util.Daemon;
 import org.sprintdragon.ipc.util.ThreadPoolUtils;
+import org.sprintdragon.service.AbstractService;
+
 import java.util.concurrent.*;
 
 /**
  * Created by stereo on 16-8-18.
  */
-public class ActionHandler implements IActionHandler,EventHandler<Event<Constants.ActionEnum>> {
+public class ServiceHandler extends AbstractService implements IServiceHandler,EventHandler<Event<Constants.ActionEnum>> {
 
-    private static Logger LOG = LoggerFactory.getLogger(ActionHandler.class);
+    private static Logger LOG = LoggerFactory.getLogger(ServiceHandler.class);
 
     private ExecutorService handlerPool;
-    private final IActionInvoker actionInvoker;
+    private final IServiceInvoker actionInvoker;
+    final int poolSize;
+    final int queueSize;
+    final String poolType;
+    final String queueType;
 
-    public ActionHandler(IActionContext servicer, Config config){
-        actionInvoker = new ActionInvoker(servicer);
-        initHandlerPool(config.getBusinessPoolSize(),config.getBusinessPoolType(),config.getBusinessPoolQueueSize(),config.getBusinessPoolQueueType());
+    public ServiceHandler(IServiceContext servicer, Config config)
+    {
+        super("ServiceHandler");
+        actionInvoker = new ServiceInvoker(servicer);
+        poolSize = config.getBusinessPoolSize();
+        queueSize = config.getBusinessPoolQueueSize();
+        poolType = config.getBusinessPoolType();
+        queueType = config.getBusinessPoolQueueType();
     }
 
-    public void initHandlerPool(int poolSize, String poolType, int queueSize, String queueType) {
+    void initHandlerPool() {
         int minPoolSize;
         int aliveTime;
         int maxPoolSize = poolSize;
@@ -79,13 +86,18 @@ public class ActionHandler implements IActionHandler,EventHandler<Event<Constant
                 configQueue, threadFactory, handler);
     }
 
+    void shutdown() {
+        if(handlerPool!=null && !handlerPool.isShutdown())
+            handlerPool.shutdown();
+    }
+
     @Override
     public void handleHeartbeat(HeartbeatEvent heartbeat) throws Exception {
     }
 
     @Override
     public void handleRequest(RequestEvent request) throws Exception {
-        boolean succeed = actionInvoker.invoke(new ActionCall(request.getTarget()));
+        boolean succeed = actionInvoker.invoke(new ServiceCall(request.getTarget()));
         if (succeed)
             replyResponse(new ResponseEvent(request.getTarget(),request.getChannelHandlerContext()));
         else
@@ -99,7 +111,7 @@ public class ActionHandler implements IActionHandler,EventHandler<Event<Constant
     }
 
     @Override
-    public IActionInvoker getActionInvoker() {
+    public IServiceInvoker getActionInvoker() {
         return actionInvoker;
     }
 
@@ -127,5 +139,19 @@ public class ActionHandler implements IActionHandler,EventHandler<Event<Constant
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void serviceInit() throws Exception {
+        initHandlerPool();
+    }
+
+    @Override
+    protected void serviceStart() throws Exception {
+    }
+
+    @Override
+    protected void serviceStop() throws Exception {
+        shutdown();
     }
 }
