@@ -11,7 +11,6 @@ import org.sprintdragon.ipc.Constants;
 import org.sprintdragon.ipc.server.api.*;
 import org.sprintdragon.service.AbstractService;
 import org.sprintdragon.service.Service;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,7 +26,7 @@ public class ServiceContext extends AbstractService implements IServiceContext,
 		Iterable<IService> {
 	private Config config;
 	private Dispatcher dispatcher;
-	private IServiceHandler actionHandler;
+	private IServiceHandler serviceHandler;
 	protected Map<String, IService> actionMap;
 	protected Map<String, List<IObserver>> observerMap;
 	public static Logger logger = LoggerFactory.getLogger(ServiceContext.class);
@@ -48,10 +47,10 @@ public class ServiceContext extends AbstractService implements IServiceContext,
 		((Service)dispatcher).init();
 
 		//业务处理器
-		actionHandler = new ServiceHandler(this,config);
-		((Service)actionHandler).init();
+		serviceHandler = new ServiceHandler(this,config);
+		((Service)serviceHandler).init();
 
-		dispatcher.register(Constants.ActionEnum.class, (EventHandler) actionHandler);
+		dispatcher.register(Constants.ServiceEnum.class, (EventHandler) serviceHandler);
 	}
 
 	@Override
@@ -59,8 +58,8 @@ public class ServiceContext extends AbstractService implements IServiceContext,
 		if (dispatcher!=null)
 			((Service)dispatcher).start();
 
-		if (actionHandler!=null)
-			((Service)actionHandler).start();
+		if (serviceHandler!=null)
+			((Service)serviceHandler).start();
 	}
 
 	@Override
@@ -68,8 +67,8 @@ public class ServiceContext extends AbstractService implements IServiceContext,
 		if (dispatcher!=null)
 			((Service)dispatcher).stop();
 
-		if (actionHandler!=null)
-			((Service)actionHandler).stop();
+		if (serviceHandler!=null)
+			((Service)serviceHandler).stop();
 
 	}
 
@@ -181,8 +180,8 @@ public class ServiceContext extends AbstractService implements IServiceContext,
 	}
 
 	@Override
-	public IServiceHandler getActionHandler() {
-		return actionHandler;
+	public IServiceHandler getServiceHandler() {
+		return serviceHandler;
 	}
 
 	@Override

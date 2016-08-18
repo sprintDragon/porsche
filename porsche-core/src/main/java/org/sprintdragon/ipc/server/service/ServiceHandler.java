@@ -11,7 +11,6 @@ import org.sprintdragon.ipc.exc.IpcRuntimeException;
 import org.sprintdragon.ipc.server.api.IServiceContext;
 import org.sprintdragon.ipc.server.api.IServiceHandler;
 import org.sprintdragon.ipc.server.api.IServiceInvoker;
-import org.sprintdragon.ipc.server.event.HeartbeatEvent;
 import org.sprintdragon.ipc.server.event.RequestEvent;
 import org.sprintdragon.ipc.server.event.ResponseEvent;
 import org.sprintdragon.ipc.util.Daemon;
@@ -23,43 +22,37 @@ import java.util.concurrent.*;
 /**
  * Created by stereo on 16-8-18.
  */
-public class ServiceHandler extends AbstractService implements IServiceHandler,EventHandler<Event<Constants.ActionEnum>> {
+public class ServiceHandler extends AbstractService implements IServiceHandler,EventHandler<Event<Constants.ServiceEnum>> {
 
     private static Logger LOG = LoggerFactory.getLogger(ServiceHandler.class);
 
+    private Config config;
     private ExecutorService handlerPool;
     private final IServiceInvoker actionInvoker;
-    final int poolSize;
-    final int queueSize;
-    final String poolType;
-    final String queueType;
 
     public ServiceHandler(IServiceContext servicer, Config config)
     {
         super("ServiceHandler");
         actionInvoker = new ServiceInvoker(servicer);
-        poolSize = config.getBusinessPoolSize();
-        queueSize = config.getBusinessPoolQueueSize();
-        poolType = config.getBusinessPoolType();
-        queueType = config.getBusinessPoolQueueType();
+        this.config = config;
     }
 
     void initHandlerPool() {
         int minPoolSize;
         int aliveTime;
-        int maxPoolSize = poolSize;
-        if (Constants.THREADPOOL_TYPE_FIXED.equals(poolType)) {
+        int maxPoolSize = config.getBusinessPoolSize();
+        if (Constants.THREADPOOL_TYPE_FIXED.equals(config.getBusinessPoolType())) {
             minPoolSize = maxPoolSize;
             aliveTime = 0;
-        } else if (Constants.THREADPOOL_TYPE_CACHED.equals(poolType)) {
+        } else if (Constants.THREADPOOL_TYPE_CACHED.equals(config.getBusinessPoolType())) {
             minPoolSize = 20;
             maxPoolSize = Math.max(minPoolSize, maxPoolSize);
             aliveTime = 60000;
         } else {
-            throw new IpcRuntimeException("HandlerPool-"+ poolType);
+            throw new IpcRuntimeException("HandlerPool-"+ config.getBusinessPoolType());
         }
-        boolean isPriority = Constants.QUEUE_TYPE_PRIORITY.equals(queueType);
-        BlockingQueue<Runnable> configQueue = ThreadPoolUtils.buildQueue(queueSize, isPriority);
+        boolean isPriority = Constants.QUEUE_TYPE_PRIORITY.equals(config.getBusinessPoolQueueType());
+        BlockingQueue<Runnable> configQueue = ThreadPoolUtils.buildQueue(config.getBusinessPoolQueueSize(), isPriority);
         Daemon.DaemonFactory threadFactory = new Daemon.DaemonFactory();
         RejectedExecutionHandler handler = new RejectedExecutionHandler() {
             private int i = 1;
@@ -92,10 +85,6 @@ public class ServiceHandler extends AbstractService implements IServiceHandler,E
     }
 
     @Override
-    public void handleHeartbeat(HeartbeatEvent heartbeat) throws Exception {
-    }
-
-    @Override
     public void handleRequest(RequestEvent request) throws Exception {
         boolean succeed = actionInvoker.invoke(new ServiceCall(request.getTarget()));
         if (succeed)
@@ -116,8 +105,8 @@ public class ServiceHandler extends AbstractService implements IServiceHandler,E
     }
 
     @Override
-    public void handle(final Event<Constants.ActionEnum> event) {
-        Constants.ActionEnum type = event.getType();
+    public void handle(final Event<Constants.ServiceEnum> event) {
+        Constants.ServiceEnum type = event.getType();
         switch (type)
         {
             case REQUEST:
@@ -133,8 +122,6 @@ public class ServiceHandler extends AbstractService implements IServiceHandler,E
                 });
                 break;
             case RESPONSE:
-                break;
-            case HEARTBEAT:
                 break;
             default:
                 break;

@@ -9,7 +9,6 @@ import org.sprintdragon.ipc.Constants;
 import org.sprintdragon.ipc.Heartbeat;
 import org.sprintdragon.ipc.Packet;
 import org.sprintdragon.ipc.server.api.*;
-import org.sprintdragon.ipc.server.event.HeartbeatEvent;
 import org.sprintdragon.ipc.server.event.RequestEvent;
 import org.sprintdragon.ipc.server.event.ResponseEvent;
 
@@ -41,7 +40,6 @@ public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements Ip
             }else if (msg instanceof Heartbeat)
             {
                 Heartbeat heartbeat = (Heartbeat) msg;
-                dispatcher.getEventHandler().handle(new HeartbeatEvent(heartbeat,ctx));
             }
             else
                 LOG.error("IpcEngineHandler.channelRead error msg is " + msg);

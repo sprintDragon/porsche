@@ -36,7 +36,7 @@ public class IpcServer extends AbstractService {
     private ServerBootstrap bootstrap;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
-    private IServiceContext actionContext;
+    private IServiceContext serviceContext;
     private IpcRegistry registry;
 
     public IpcServer(){
@@ -50,10 +50,10 @@ public class IpcServer extends AbstractService {
 
     @Override
     protected void serviceInit() throws Exception {
-        actionContext = new ServiceContext(config);
-        ((Service)actionContext).init();
+        serviceContext = new ServiceContext(config);
+        ((Service)serviceContext).init();
 
-        registry = new IpcRegistry(actionContext);
+        registry = new IpcRegistry(serviceContext);
 
         final SslContext sslCtx;
         if (config.isSsl()) {
@@ -94,7 +94,7 @@ public class IpcServer extends AbstractService {
                         p.addLast(
                                 new MsgPackEncoder(),
                                 new MsgPackDecoder(config.getPayload()),
-                                new IpcEngineHandler(actionContext.getDispatcher())
+                                new IpcEngineHandler(serviceContext.getDispatcher())
                         );
                     }
                 });
@@ -103,9 +103,9 @@ public class IpcServer extends AbstractService {
     @Override
     protected void serviceStart() throws Exception {
 
-        if (bootstrap!=null && actionContext!=null)
+        if (bootstrap!=null && serviceContext!=null)
         {
-            ((Service)actionContext).start();
+            ((Service)serviceContext).start();
             channel = bootstrap.bind(config.getHost(),config.getPort()).sync().channel();
         }
         else
@@ -114,9 +114,9 @@ public class IpcServer extends AbstractService {
 
     @Override
     protected void serviceStop() throws Exception {
-        if(actionContext!=null && bootstrap!=null && channel!=null && bossGroup!=null && workerGroup!=null)
+        if(serviceContext!=null && bootstrap!=null && channel!=null && bossGroup!=null && workerGroup!=null)
         {
-            ((Service)actionContext).stop();
+            ((Service)serviceContext).stop();
             channel.close().sync();
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
@@ -138,10 +138,10 @@ public class IpcServer extends AbstractService {
     }
 
     public IServiceContext getActionContext() {
-        return actionContext;
+        return serviceContext;
     }
 
     public Dispatcher getDispatcher() {
-        return actionContext!=null?actionContext.getDispatcher() : null;
+        return serviceContext!=null ? serviceContext.getDispatcher() : null;
     }
 }

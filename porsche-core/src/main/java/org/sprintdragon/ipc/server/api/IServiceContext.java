@@ -73,7 +73,7 @@ public interface IServiceContext {
 	 */
 	public boolean hasAction(String actionName);
 
-	public IServiceHandler getActionHandler();
+	public IServiceHandler getServiceHandler();
 
 	public Dispatcher getDispatcher();
 }

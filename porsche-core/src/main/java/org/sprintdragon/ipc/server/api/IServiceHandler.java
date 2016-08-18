@@ -1,6 +1,5 @@
 package org.sprintdragon.ipc.server.api;
 
-import org.sprintdragon.ipc.server.event.HeartbeatEvent;
 import org.sprintdragon.ipc.server.event.RequestEvent;
 import org.sprintdragon.ipc.server.event.ResponseEvent;
 
@@ -9,7 +8,7 @@ import org.sprintdragon.ipc.server.event.ResponseEvent;
  */
 public interface IServiceHandler {
 
-    public void handleHeartbeat(HeartbeatEvent heartbeat) throws Exception;
+    //public void handleHeartbeat(HeartbeatEvent heartbeat) throws Exception;
 
     public void handleRequest(RequestEvent request) throws Exception;
 

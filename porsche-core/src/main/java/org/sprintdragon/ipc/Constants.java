@@ -68,7 +68,7 @@ public final class Constants {
         //primitiveClassMap.put(Void.class,"8");
     }
 
-    public enum ActionEnum {
-        REQUEST,RESPONSE,HEARTBEAT
+    public enum ServiceEnum {
+        REQUEST,RESPONSE
     }
 }

@@ -8,13 +8,13 @@ import org.sprintdragon.ipc.util.Time;
 /**
  * Created by stereo on 16-8-18.
  */
-public class ActionEvent<T> implements Event<Constants.ActionEnum>{
+public class ServiceEvent<T> implements Event<Constants.ServiceEnum>{
     private T target;
     private long timestamp;
-    private Constants.ActionEnum type;
+    private Constants.ServiceEnum type;
     private ChannelHandlerContext channelHandlerContext;
 
-    public ActionEvent(T target, Constants.ActionEnum type, ChannelHandlerContext channelHandlerContext){
+    public ServiceEvent(T target, Constants.ServiceEnum type, ChannelHandlerContext channelHandlerContext){
         this.timestamp = Time.now();
         this.target = target;
         this.type = type;
@@ -22,7 +22,7 @@ public class ActionEvent<T> implements Event<Constants.ActionEnum>{
     }
 
     @Override
-    public Constants.ActionEnum getType() {
+    public Constants.ServiceEnum getType() {
         return type;
     }
 

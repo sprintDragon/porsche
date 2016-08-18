@@ -7,8 +7,8 @@ import org.sprintdragon.ipc.Packet;
 /**
  * Created by stereo on 16-8-18.
  */
-public class RequestEvent extends ActionEvent<Packet>{
+public class RequestEvent extends ServiceEvent<Packet> {
     public RequestEvent(Packet target,ChannelHandlerContext channelHandlerContext) {
-        super(target, Constants.ActionEnum.REQUEST, channelHandlerContext);
+        super(target, Constants.ServiceEnum.REQUEST, channelHandlerContext);
     }
 }
