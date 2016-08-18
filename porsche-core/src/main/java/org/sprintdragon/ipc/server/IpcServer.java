@@ -57,7 +57,6 @@ public class IpcServer extends AbstractService {
     protected void serviceInit() throws Exception {
         actionContext = new ActionContext(config);
         dispatcher = actionContext.getDispatcher();
-
         registry = new IpcRegistry(actionContext);
 
         final SslContext sslCtx;
@@ -107,20 +106,20 @@ public class IpcServer extends AbstractService {
 
     @Override
     protected void serviceStart() throws Exception {
-        if (bootstrap!=null)
-        {
-            channel = bootstrap.bind(config.getHost(),config.getPort()).sync().channel();
+        if (dispatcher!=null)
             dispatcher.serviceStart();
-        }
+        if (bootstrap!=null)
+            channel = bootstrap.bind(config.getHost(),config.getPort()).sync().channel();
         else
             throw new IpcRuntimeException("IpcServer is not inited");
     }
 
     @Override
     protected void serviceStop() throws Exception {
+        if (dispatcher!=null)
+            dispatcher.serviceStop();
         if(bootstrap!=null && channel!=null && bossGroup!=null && workerGroup!=null)
         {
-            dispatcher.serviceStop();
             channel.close().sync();
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
