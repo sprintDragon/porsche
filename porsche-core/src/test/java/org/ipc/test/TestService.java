@@ -12,10 +12,10 @@ import java.util.Map;
 /**
  * Created by stereo on 16-8-9.
  */
-public class TestAction extends Service implements ITestService {
-    private static Logger LOG = LoggerFactory.getLogger(TestAction.class);
+public class TestService extends Service implements ITestService {
+    private static Logger LOG = LoggerFactory.getLogger(TestService.class);
 
-    public TestAction(Class<?> cls) {
+    public TestService(Class<?> cls) {
         super(cls);
     }
 
@@ -24,30 +24,30 @@ public class TestAction extends Service implements ITestService {
     }
 
     public Bean test1(Bean bean){
-        LOG.info("TestAction.test1 " + bean);
+        LOG.info("TestService.test1 " + bean);
         return bean;
     }
 
     @Override
     public int test2(Bean bean) {
-        LOG.info("TestAction.test2 " + bean);
+        LOG.info("TestService.test2 " + bean);
         return 1;
     }
 
     @Override
     public Integer test3() {
-        LOG.info("TestAction.test3");
+        LOG.info("TestService.test3");
         return 1;
     }
 
     @Override
     public void test4() {
-        LOG.info("TestAction.test4");
+        LOG.info("TestService.test4");
     }
 
     @Override
     public Map<String, Bean> test5(List<Bean> beens) {
-        LOG.info("TestAction.test5 " + beens);
+        LOG.info("TestService.test5 " + beens);
         Map<String,Bean> map = new HashMap<String,Bean>();
         for (int i = 0; i < beens.size(); i++) {
             map.put(""+i,beens.get(i));
@@ -57,7 +57,7 @@ public class TestAction extends Service implements ITestService {
 
     @Override
     public Bean2 test6(Bean bean) {
-        LOG.info("TestAction.test6 " + bean);
+        LOG.info("TestService.test6 " + bean);
         return new Bean2();
     }
 }

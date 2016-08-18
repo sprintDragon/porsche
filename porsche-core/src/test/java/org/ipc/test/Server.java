@@ -20,7 +20,7 @@ public class Server {
         ipcServer.start();
         //注册接口
         IpcRegistry ipcRegistry = ipcServer.getIpcRegistry();
-        ipcRegistry.registerAction(new TestAction(ITestService.class));
+        ipcRegistry.registerAction(new TestService(ITestService.class));
         //关闭服务
         //ipcServer.close();
     }
