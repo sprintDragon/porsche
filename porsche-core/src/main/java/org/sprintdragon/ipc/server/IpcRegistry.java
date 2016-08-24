@@ -15,20 +15,20 @@ public class IpcRegistry {
         this.actionContext = actionContext;
     }
 
-    public void registerAction(IService action) {
-        actionContext.registerService(action);
+    public void registerService(IService service) {
+        actionContext.registerService(service);
     }
 
-    public IService retrieveAction(String actionName) {
-        return actionContext.retrieveService(actionName);
+    public IService retrieveService(String serviceName) {
+        return actionContext.retrieveService(serviceName);
     }
 
-    public IService removeAction(String actionName) {
-        return actionContext.removeService(actionName);
+    public IService removeService(String serviceName) {
+        return actionContext.removeService(serviceName);
     }
 
-    public boolean hasAction(String actionName) {
-        return actionContext.hasService(actionName);
+    public boolean hasService(String serviceName) {
+        return actionContext.hasService(serviceName);
     }
 
 }
