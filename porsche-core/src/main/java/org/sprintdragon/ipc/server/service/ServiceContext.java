@@ -80,18 +80,18 @@ public class ServiceContext extends AbstractService implements IServiceContext,
 	}
 
 	@Override
-	public void registerService(final IService action) {
-		if (this.serviceMap.containsKey(action.getServiceName()))
+	public void registerService(final IService service) {
+		if (this.serviceMap.containsKey(service.getServiceName()))
 			return;
-		this.serviceMap.put(action.getServiceName(), action);
+		this.serviceMap.put(service.getServiceName(), service);
 
-		registerObserver(action.getServiceName(), new Observer(new IFunction() {
+		registerObserver(service.getServiceName(), new Observer(new IFunction() {
 			public void onNotification(INotification notification) {
 				executeService(notification);
 			}
 		}, this));
-		action.setServiceContext(this);
-		action.onRegister();
+		service.setServiceContext(this);
+		service.onRegister();
 	}
 
 	@Override

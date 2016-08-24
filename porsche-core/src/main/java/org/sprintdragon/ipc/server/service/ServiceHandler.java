@@ -28,12 +28,12 @@ public class ServiceHandler extends AbstractService implements IServiceHandler,E
 
     private Config config;
     private ExecutorService handlerPool;
-    private final IServiceInvoker actionInvoker;
+    private final IServiceInvoker serviceInvoker;
 
     public ServiceHandler(IServiceContext servicer, Config config)
     {
         super("ServiceHandler");
-        actionInvoker = new ServiceInvoker(servicer);
+        serviceInvoker = new ServiceInvoker(servicer);
         this.config = config;
     }
 
@@ -86,7 +86,7 @@ public class ServiceHandler extends AbstractService implements IServiceHandler,E
 
     @Override
     public void handleRequest(RequestEvent request) throws Exception {
-        boolean succeed = actionInvoker.invoke(new ServiceCall(request.getTarget()));
+        boolean succeed = serviceInvoker.invoke(new ServiceCall(request.getTarget()));
         if (succeed)
             replyResponse(new ResponseEvent(request.getTarget(),request.getChannelHandlerContext()));
         else
@@ -100,8 +100,8 @@ public class ServiceHandler extends AbstractService implements IServiceHandler,E
     }
 
     @Override
-    public IServiceInvoker getActionInvoker() {
-        return actionInvoker;
+    public IServiceInvoker getServiceInvoker() {
+        return serviceInvoker;
     }
 
     @Override

@@ -14,5 +14,5 @@ public interface IServiceHandler {
 
     public void replyResponse(ResponseEvent response) throws Exception;
 
-    public IServiceInvoker getActionInvoker();
+    public IServiceInvoker getServiceInvoker();
 }
