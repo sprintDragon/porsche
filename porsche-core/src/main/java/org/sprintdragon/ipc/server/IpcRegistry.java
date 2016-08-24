@@ -8,27 +8,27 @@ import org.sprintdragon.ipc.server.api.IServiceContext;
  */
 public class IpcRegistry {
 
-    private IServiceContext actionContext;
+    private IServiceContext serviceContext;
 
-    public IpcRegistry(IServiceContext actionContext)
+    public IpcRegistry(IServiceContext serviceContext)
     {
-        this.actionContext = actionContext;
+        this.serviceContext = serviceContext;
     }
 
     public void registerService(IService service) {
-        actionContext.registerService(service);
+        serviceContext.registerService(service);
     }
 
     public IService retrieveService(String serviceName) {
-        return actionContext.retrieveService(serviceName);
+        return serviceContext.retrieveService(serviceName);
     }
 
     public IService removeService(String serviceName) {
-        return actionContext.removeService(serviceName);
+        return serviceContext.removeService(serviceName);
     }
 
     public boolean hasService(String serviceName) {
-        return actionContext.hasService(serviceName);
+        return serviceContext.hasService(serviceName);
     }
 
 }
