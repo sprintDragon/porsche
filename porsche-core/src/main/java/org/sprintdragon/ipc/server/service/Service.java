@@ -58,7 +58,7 @@ public abstract class Service implements IService {
 		return sendNotification(notificationName,null,null);
 	}
 
-	public void setActionContext(IServiceContext actionContext) {
+	public void setServiceContext(IServiceContext actionContext) {
 		this.actionContext = actionContext;
 	}
 }

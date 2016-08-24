@@ -16,19 +16,19 @@ public class IpcRegistry {
     }
 
     public void registerAction(IService action) {
-        actionContext.registerAction(action);
+        actionContext.registerService(action);
     }
 
     public IService retrieveAction(String actionName) {
-        return actionContext.retrieveAction(actionName);
+        return actionContext.retrieveService(actionName);
     }
 
     public IService removeAction(String actionName) {
-        return actionContext.removeAction(actionName);
+        return actionContext.removeService(actionName);
     }
 
     public boolean hasAction(String actionName) {
-        return actionContext.hasAction(actionName);
+        return actionContext.hasService(actionName);
     }
 
 }

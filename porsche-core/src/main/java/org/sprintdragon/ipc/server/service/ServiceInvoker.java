@@ -62,7 +62,7 @@ public final class ServiceInvoker implements IServiceInvoker {
 
 	@Override
 	public Object getService(String serviceName) {
-		return servicer.retrieveAction(serviceName);
+		return servicer.retrieveService(serviceName);
 	}
 
 	/**
