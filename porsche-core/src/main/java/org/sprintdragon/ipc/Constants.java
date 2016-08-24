@@ -34,8 +34,14 @@ public final class Constants {
      */
     public static final byte TYPE_REQUEST = 0x01;	//普通请求类型
     public static final byte TYPE_RESPONSE = 0x02;	//普通响应类型
-    //public static final byte TYPE_HEARTBEAT_REQUEST = 0x03; //心跳请求类型
-    //public static final byte TYPE_HEARTBEAT_RESPONSE = 0x04;//心跳响应类型
+
+    /**
+     * heartbeat type
+     */
+    public static final byte TYPE_HEARTBEAT_REQUEST_REGISTER = 0x01;//心跳注册
+    public static final byte TYPE_HEARTBEAT_REQUEST_UNREGISTER = 0x02;//心跳注销
+    public static final byte TYPE_HEARTBEAT_REQUEST = 0x03; //心跳请求类型
+    public static final byte TYPE_HEARTBEAT_RESPONSE = 0x04;//心跳响应类型
 
     public static final Map<Class,String> primitiveClassMap = new HashMap<Class, String>();
     static {

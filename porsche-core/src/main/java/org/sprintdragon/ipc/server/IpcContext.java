@@ -2,11 +2,12 @@ package org.sprintdragon.ipc.server;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import org.sprintdragon.ipc.server.service.AttributeStore;
 
 /**
  * Created by stereo on 16-8-17.
  */
-public class IpcContext {
+public class IpcContext extends AttributeStore{
 
     private Object _msg;
     private ChannelHandlerContext _channelHandlerContext;
