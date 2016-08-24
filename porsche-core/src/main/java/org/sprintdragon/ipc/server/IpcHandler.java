@@ -15,12 +15,12 @@ import org.sprintdragon.ipc.server.event.ResponseEvent;
 /**
  * Created by stereo on 16-8-9.
  */
-public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements IpcEngine{
+public class IpcHandler extends ChannelInboundHandlerAdapter implements IpcEngine{
 
-    private static Logger LOG = LoggerFactory.getLogger(IpcEngineHandler.class);
+    private static Logger LOG = LoggerFactory.getLogger(IpcHandler.class);
 
     private Dispatcher dispatcher;
-    public IpcEngineHandler(Dispatcher dispatcher) {
+    public IpcHandler(Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
     }
 
@@ -36,23 +36,23 @@ public class IpcEngineHandler extends ChannelInboundHandlerAdapter implements Ip
                 else if (packet.getType() == Constants.TYPE_RESPONSE)
                     dispatcher.getEventHandler().handle(new ResponseEvent(packet,ctx));
                 else
-                    LOG.error("IpcEngineHandler.channelRead error msg is " + msg);
+                    LOG.error("IpcHandler.channelRead error msg is " + msg);
             }else if (msg instanceof Heartbeat)
             {
                 Heartbeat heartbeat = (Heartbeat) msg;
             }
             else
-                LOG.error("IpcEngineHandler.channelRead error msg is " + msg);
+                LOG.error("IpcHandler.channelRead error msg is " + msg);
         } catch (Exception e)
         {
-            LOG.error("IpcEngineHandler.handle packet is " + msg + " error",e);
+            LOG.error("IpcHandler.handle packet is " + msg + " error",e);
         }
         IpcContext.end();
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        LOG.error("IpcEngineHandler.exceptionCaught",cause);
+        LOG.error("IpcHandler.exceptionCaught",cause);
         ctx.close();
     }
 }

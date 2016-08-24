@@ -9,8 +9,8 @@ public final class Config {
 	private int sendTimeout = 5 * 1000;
 	private int readTimeout = 15 * 1000;
 	private int idleTimeout = 30 * 1000;
-	private int heartBeatRate = 15;
-	private int heartBeatTimeout = 10;
+	private int heartBeatRate = 5 * 1000;// 5s
+	private int heartBeatExpireInterval = 60 * 1000; // 60s
 	private boolean ssl = false;
 	private boolean tcpNoDelay = true;
 	private boolean reuseAddress = true;
@@ -21,7 +21,6 @@ public final class Config {
 	private int payload = 8 * 1024 * 1024;
 	private InetSocketAddress remoteAddress = new InetSocketAddress(
 			"0.0.0.0", 8099);
-
 	private int businessPoolSize = 200;//业务处理线程
 	private String businessPoolType = Constants.THREADPOOL_TYPE_CACHED;//线程池类型
 	private String businessPoolQueueType = Constants.QUEUE_TYPE_NORMAL;  // 队列类型
@@ -131,12 +130,12 @@ public final class Config {
 		this.heartBeatRate = heartBeatRate;
 	}
 
-	public int getHeartBeatTimeout() {
-		return heartBeatTimeout;
+	public int getHeartBeatExpireInterval() {
+		return heartBeatExpireInterval;
 	}
 
-	public void setHeartBeatTimeout(int heartBeatTimeout) {
-		this.heartBeatTimeout = heartBeatTimeout;
+	public void setHeartBeatExpireInterval(int heartBeatExpireInterval) {
+		this.heartBeatExpireInterval = heartBeatExpireInterval;
 	}
 
 	public String getHost(){
@@ -220,7 +219,7 @@ public final class Config {
 				", readTimeout=" + readTimeout +
 				", idleTimeout=" + idleTimeout +
 				", heartBeatRate=" + heartBeatRate +
-				", heartBeatTimeout=" + heartBeatTimeout +
+				", heartBeatExpireInterval=" + heartBeatExpireInterval +
 				", ssl=" + ssl +
 				", tcpNoDelay=" + tcpNoDelay +
 				", reuseAddress=" + reuseAddress +

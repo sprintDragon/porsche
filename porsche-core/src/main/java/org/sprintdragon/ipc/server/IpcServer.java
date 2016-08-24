@@ -94,7 +94,7 @@ public class IpcServer extends AbstractService {
                         p.addLast(
                                 new MsgPackEncoder(),
                                 new MsgPackDecoder(config.getPayload()),
-                                new IpcEngineHandler(serviceContext.getDispatcher())
+                                new IpcHandler(serviceContext.getDispatcher())
                         );
                     }
                 });

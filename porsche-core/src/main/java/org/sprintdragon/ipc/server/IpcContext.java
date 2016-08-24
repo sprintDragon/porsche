@@ -2,7 +2,6 @@ package org.sprintdragon.ipc.server;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import org.sprintdragon.ipc.Packet;
 
 /**
  * Created by stereo on 16-8-17.
