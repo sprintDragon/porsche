@@ -11,11 +11,11 @@ public interface IService extends INotifier {
 
 	public void onRegister();
 
-	public String getActionName();
+	public String getServiceName();
 
-	public IService resolveAction(String actionName);
+	public IService resolveService(String actionName);
 
 	public void handleNotification(INotification notification);
 
-	public void setActionContext(IServiceContext actionContext);
+	public void setServiceContext(IServiceContext actionContext);
 }

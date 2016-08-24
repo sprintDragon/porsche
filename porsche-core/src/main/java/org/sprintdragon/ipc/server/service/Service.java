@@ -12,7 +12,7 @@ import org.sprintdragon.ipc.server.api.INotification;
  */
 public abstract class Service implements IService {
 
-	protected String actionName = "actionName";
+	protected String serviceName = "serviceName";
 	protected IServiceContext actionContext;
 
 	@Override
@@ -24,17 +24,17 @@ public abstract class Service implements IService {
 	}
 
 	@Override
-	public String getActionName() {
-		return actionName;
+	public String getServiceName() {
+		return serviceName;
 	}
 
 	public Service(Class<?> cls) {
-		this.actionName = cls.getName();
+		this.serviceName = cls.getName();
 	}
 
 	@Override
-	public IService resolveAction(String actionName) {
-		if (this.actionName.equals(actionName))
+	public IService resolveService(String actionName) {
+		if (this.serviceName.equals(actionName))
 			return this;
 		return null;
 	}

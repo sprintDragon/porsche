@@ -38,42 +38,40 @@ public interface IServiceContext {
 	/**
 	 * 注册Action
 	 * 
-	 * @param action
+	 * @param service
 	 */
-	public void registerAction(IService action);
+	public void registerService(IService service);
 
 	/**
 	 * 检索Action
 	 * 
-	 * @param actionName
+	 * @param serviceName
 	 * @return
 	 */
-	public IService retrieveAction(String actionName);
+	public IService retrieveService(String serviceName);
 
 	/**
 	 * 执行Action
 	 * 
 	 * @param notification
 	 */
-	public void executeAction(INotification notification);
+	public void executeService(INotification notification);
 
 	/**
 	 * 注销Action
 	 * 
-	 * @param actionName
+	 * @param serviceName
 	 * @return
 	 */
-	public IService removeAction(String actionName);
+	public IService removeService(String serviceName);
 
 	/**
 	 * 是否有actionName的Action
 	 * 
-	 * @param actionName
+	 * @param serviceName
 	 * @return
 	 */
-	public boolean hasAction(String actionName);
+	public boolean hasService(String serviceName);
 
 	public IServiceHandler getServiceHandler();
-
-	public Dispatcher getDispatcher();
 }

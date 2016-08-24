@@ -14,11 +14,13 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sprintdragon.event.AsyncDispatcher;
 import org.sprintdragon.event.Dispatcher;
+import org.sprintdragon.event.EventHandler;
 import org.sprintdragon.ipc.Config;
+import org.sprintdragon.ipc.Constants;
 import org.sprintdragon.ipc.codec.MsgPackDecoder;
 import org.sprintdragon.ipc.codec.MsgPackEncoder;
-import org.sprintdragon.ipc.exc.IpcRuntimeException;
 import org.sprintdragon.ipc.server.service.ServiceContext;
 import org.sprintdragon.ipc.server.api.IServiceContext;
 import org.sprintdragon.service.AbstractService;
@@ -38,6 +40,7 @@ public class IpcServer extends AbstractService {
     private EventLoopGroup workerGroup;
     private IServiceContext serviceContext;
     private IpcRegistry registry;
+    private Dispatcher dispatcher;
 
     public IpcServer(){
         this(new Config());
@@ -50,8 +53,16 @@ public class IpcServer extends AbstractService {
 
     @Override
     protected void serviceInit() throws Exception {
+        //事件处理器
+        dispatcher = new AsyncDispatcher();
+        ((Service)dispatcher).init();
+
+        //业务上下文
         serviceContext = new ServiceContext(config);
         ((Service)serviceContext).init();
+
+        //注册业务处理器
+        dispatcher.register(Constants.ServiceEnum.class, (EventHandler) serviceContext.getServiceHandler());
 
         registry = new IpcRegistry(serviceContext);
 
@@ -94,7 +105,7 @@ public class IpcServer extends AbstractService {
                         p.addLast(
                                 new MsgPackEncoder(),
                                 new MsgPackDecoder(config.getPayload()),
-                                new IpcHandler(serviceContext.getDispatcher())
+                                new IpcHandler(dispatcher)
                         );
                     }
                 });
@@ -102,21 +113,24 @@ public class IpcServer extends AbstractService {
 
     @Override
     protected void serviceStart() throws Exception {
-
-        if (bootstrap!=null && serviceContext!=null)
-        {
+        if (dispatcher!=null)
+            ((Service)dispatcher).start();
+        if (serviceContext!=null)
             ((Service)serviceContext).start();
+        if (bootstrap!=null)
+        {
             channel = bootstrap.bind(config.getHost(),config.getPort()).sync().channel();
         }
-        else
-            throw new IpcRuntimeException("IpcServer is not inited");
     }
 
     @Override
     protected void serviceStop() throws Exception {
-        if(serviceContext!=null && bootstrap!=null && channel!=null && bossGroup!=null && workerGroup!=null)
-        {
+        if (dispatcher!=null)
+            ((Service)dispatcher).stop();
+        if(serviceContext!=null)
             ((Service)serviceContext).stop();
+        if(bootstrap!=null && channel!=null && bossGroup!=null && workerGroup!=null)
+        {
             channel.close().sync();
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
@@ -125,8 +139,7 @@ public class IpcServer extends AbstractService {
             bossGroup = null;
             workerGroup = null;
 
-        }else
-            throw new IpcRuntimeException("IpcServer is not started");
+        }
     }
 
     public IpcRegistry getIpcRegistry(){
@@ -137,11 +150,11 @@ public class IpcServer extends AbstractService {
         return config;
     }
 
-    public IServiceContext getActionContext() {
+    public IServiceContext getServiceContext() {
         return serviceContext;
     }
 
     public Dispatcher getDispatcher() {
-        return serviceContext!=null ? serviceContext.getDispatcher() : null;
+        return dispatcher;
     }
 }
