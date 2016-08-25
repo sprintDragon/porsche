@@ -3,7 +3,12 @@ package org.sprintdragon.ipc.server.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.sprintdragon.event.AsyncDispatcher;
+import org.sprintdragon.event.Dispatcher;
+import org.sprintdragon.event.EventHandler;
 import org.sprintdragon.ipc.Config;
+import org.sprintdragon.ipc.Constants;
 import org.sprintdragon.ipc.server.api.*;
 import org.sprintdragon.service.AbstractService;
 import org.sprintdragon.service.Service;
@@ -21,6 +26,7 @@ import java.util.Map;
 public class ServiceContext extends AbstractService implements IServiceContext,
 		Iterable<IService> {
 	private Config config;
+	private Dispatcher dispatcher;
 	private IServiceHandler serviceHandler;
 	protected Map<String, IService> serviceMap;
 	protected Map<String, List<IObserver>> observerMap;
@@ -37,19 +43,31 @@ public class ServiceContext extends AbstractService implements IServiceContext,
 		serviceMap = new ConcurrentHashMap<String, IService>();
 		observerMap = new ConcurrentHashMap<String, List<IObserver>>();
 
+		//事件处理器
+		dispatcher = new AsyncDispatcher();
+		((Service)dispatcher).init();
+
 		//业务处理器
 		serviceHandler = new ServiceHandler(this,config);
 		((Service)serviceHandler).init();
+
+		//注册业务处理器
+		dispatcher.register(Constants.ServiceEnum.class, (EventHandler) serviceHandler);
 	}
 
 	@Override
 	protected void serviceStart() throws Exception {
-		if (serviceHandler!=null)
+		if (dispatcher!=null)
+			((Service)dispatcher).start();
+		if (serviceHandler!=null) {
 			((Service)serviceHandler).start();
+		}
 	}
 
 	@Override
 	protected void serviceStop() throws Exception {
+		if (dispatcher!=null)
+			((Service)dispatcher).stop();
 		if (serviceHandler!=null)
 			((Service)serviceHandler).stop();
 	}
@@ -164,5 +182,10 @@ public class ServiceContext extends AbstractService implements IServiceContext,
 	@Override
 	public IServiceHandler getServiceHandler() {
 		return serviceHandler;
+	}
+
+	@Override
+	public Dispatcher getDispatcher() {
+		return dispatcher;
 	}
 }

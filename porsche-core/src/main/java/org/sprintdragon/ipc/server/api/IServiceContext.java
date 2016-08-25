@@ -74,4 +74,10 @@ public interface IServiceContext {
 	public boolean hasService(String serviceName);
 
 	public IServiceHandler getServiceHandler();
+
+	/**
+	 * 中央处理器
+	 * @return
+     */
+	public Dispatcher getDispatcher();
 }

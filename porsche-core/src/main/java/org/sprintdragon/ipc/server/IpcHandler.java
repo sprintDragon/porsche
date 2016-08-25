@@ -26,7 +26,6 @@ public class IpcHandler extends ChannelInboundHandlerAdapter implements IpcEngin
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        LOG.info("  xxxxxxxxxxxxx channelRead xxxxxxxxxxxxx  " + ctx.name());
         IpcContext.begin(msg,ctx);
         try {
             if(msg instanceof Packet)

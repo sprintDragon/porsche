@@ -40,7 +40,6 @@ public class IpcServer extends AbstractService {
     private EventLoopGroup workerGroup;
     private IServiceContext serviceContext;
     private IpcRegistry registry;
-    private Dispatcher dispatcher;
 
     public IpcServer(){
         this(new Config());
@@ -53,16 +52,9 @@ public class IpcServer extends AbstractService {
 
     @Override
     protected void serviceInit() throws Exception {
-        //事件处理器
-        dispatcher = new AsyncDispatcher();
-        ((Service)dispatcher).init();
-
         //业务上下文
         serviceContext = new ServiceContext(config);
         ((Service)serviceContext).init();
-
-        //注册业务处理器
-        dispatcher.register(Constants.ServiceEnum.class, (EventHandler) serviceContext.getServiceHandler());
 
         registry = new IpcRegistry(serviceContext);
 
@@ -105,7 +97,7 @@ public class IpcServer extends AbstractService {
                         p.addLast(
                                 new MsgPackEncoder(),
                                 new MsgPackDecoder(config.getPayload()),
-                                new IpcHandler(dispatcher)
+                                new IpcHandler(serviceContext.getDispatcher())
                         );
                     }
                 });
@@ -113,8 +105,6 @@ public class IpcServer extends AbstractService {
 
     @Override
     protected void serviceStart() throws Exception {
-        if (dispatcher!=null)
-            ((Service)dispatcher).start();
         if (serviceContext!=null)
             ((Service)serviceContext).start();
         if (bootstrap!=null)
@@ -125,8 +115,6 @@ public class IpcServer extends AbstractService {
 
     @Override
     protected void serviceStop() throws Exception {
-        if (dispatcher!=null)
-            ((Service)dispatcher).stop();
         if(serviceContext!=null)
             ((Service)serviceContext).stop();
         if(bootstrap!=null && channel!=null && bossGroup!=null && workerGroup!=null)
@@ -152,9 +140,5 @@ public class IpcServer extends AbstractService {
 
     public IServiceContext getServiceContext() {
         return serviceContext;
-    }
-
-    public Dispatcher getDispatcher() {
-        return dispatcher;
     }
 }
