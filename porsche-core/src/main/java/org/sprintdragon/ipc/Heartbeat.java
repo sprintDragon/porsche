@@ -12,6 +12,7 @@ import java.util.Map;
 public class Heartbeat implements BeanMessage {
     private String client_id;
     private byte type;
+    private String topic;
     private long client_time;
     private long server_time;
     private Map<String,Object> attributes = new HashMap<String,Object>();
@@ -52,6 +53,14 @@ public class Heartbeat implements BeanMessage {
         return attributes;
     }
 
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,9 +79,10 @@ public class Heartbeat implements BeanMessage {
         return "Heartbeat{" +
                 "client_id='" + client_id + '\'' +
                 ", type=" + type +
+                ", topic='" + topic + '\'' +
                 ", client_time=" + client_time +
                 ", server_time=" + server_time +
-                ", push_attributes=" + attributes +
+                ", attributes=" + attributes +
                 '}';
     }
 }

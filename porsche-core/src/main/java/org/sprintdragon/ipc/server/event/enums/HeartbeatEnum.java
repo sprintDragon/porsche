@@ -6,12 +6,6 @@ package org.sprintdragon.ipc.server.event.enums;
 public enum HeartbeatEnum {
     REGISTER,
     UNREGISTER,
-
     PING,
-
-    EXPIRE,
-
-    PUSH, //server ---> client 推送数据
-
-    PULL  //server ---> client 拉取数据
+    TOPIC_PUSH //server ---> client 推送数据
 }

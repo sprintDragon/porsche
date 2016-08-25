@@ -1,4 +1,4 @@
-package org.sprintdragon.ipc.server;
+package org.sprintdragon.ipc.server.service;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.sprintdragon.event.Dispatcher;
@@ -14,12 +14,12 @@ import org.sprintdragon.ipc.util.AbstractLivelinessMonitor;
  */
 public class Liveliness extends AbstractLivelinessMonitor<Heartbeat> implements EventHandler<Event<HeartbeatEnum>>{
 
-    private Config config;
+    private int expireIntvl;
     private EventHandler dispatcher;
 
-    public Liveliness(Config config, Dispatcher dispatcher) {
+    public Liveliness(int expireIntvl, Dispatcher dispatcher) {
         super("Liveliness");
-        this.config = config;
+        this.expireIntvl = expireIntvl;
         this.dispatcher = dispatcher.getEventHandler();
     }
 
@@ -29,19 +29,18 @@ public class Liveliness extends AbstractLivelinessMonitor<Heartbeat> implements 
 
     @Override
     protected void serviceInit() throws Exception {
-        int expireIntvl = config.getHeartBeatExpireInterval();
         setExpireInterval(expireIntvl);
         setMonitorInterval(expireIntvl/3);
     }
 
     @Override
-    public synchronized void register(Heartbeat ob) {
-        super.register(ob);
+    public synchronized void register(Heartbeat heartbeat) {
+        super.register(heartbeat);
     }
 
     @Override
-    public synchronized void unregister(Heartbeat ob) {
-        super.unregister(ob);
+    public synchronized void unregister(Heartbeat heartbeat) {
+        super.unregister(heartbeat);
     }
 
     @Override
@@ -54,6 +53,8 @@ public class Liveliness extends AbstractLivelinessMonitor<Heartbeat> implements 
             case UNREGISTER:
                 break;
             case PING:
+                break;
+            case TOPIC_PUSH:
                 break;
         }
     }
