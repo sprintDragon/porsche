@@ -1,9 +1,7 @@
 package org.sprintdragon.ipc;
 
-import io.netty.channel.ChannelHandlerContext;
 import org.msgpack.BeanMessage;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,10 +10,10 @@ import java.util.Map;
 public class Heartbeat implements BeanMessage {
     private String client_id;
     private byte type;
-    private String topic;
     private long client_time;
     private long server_time;
-    private Map<String,Object> attributes = new HashMap<String,Object>();
+    private List<String> topics;
+    private Map<String,List<Object>> data;
 
     public String getClient_id() {
         return client_id;
@@ -49,16 +47,20 @@ public class Heartbeat implements BeanMessage {
         this.server_time = server_time;
     }
 
-    public Map<String, Object> getAttributes() {
-        return attributes;
+    public List<String> getTopics() {
+        return topics;
     }
 
-    public String getTopic() {
-        return topic;
+    public void setTopics(List<String> topics) {
+        this.topics = topics;
     }
 
-    public void setTopic(String topic) {
-        this.topic = topic;
+    public Map<String, List<Object>> getData() {
+        return data;
+    }
+
+    public void setData(Map<String, List<Object>> data) {
+        this.data = data;
     }
 
     @Override
@@ -79,10 +81,10 @@ public class Heartbeat implements BeanMessage {
         return "Heartbeat{" +
                 "client_id='" + client_id + '\'' +
                 ", type=" + type +
-                ", topic='" + topic + '\'' +
                 ", client_time=" + client_time +
                 ", server_time=" + server_time +
-                ", attributes=" + attributes +
+                ", topics=" + topics +
+                ", data=" + data +
                 '}';
     }
 }

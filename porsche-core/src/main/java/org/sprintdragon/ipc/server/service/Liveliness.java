@@ -1,18 +1,16 @@
 package org.sprintdragon.ipc.server.service;
 
-import io.netty.channel.ChannelHandlerContext;
 import org.sprintdragon.event.Dispatcher;
-import org.sprintdragon.event.Event;
 import org.sprintdragon.event.EventHandler;
-import org.sprintdragon.ipc.Config;
 import org.sprintdragon.ipc.Heartbeat;
+import org.sprintdragon.ipc.server.event.HeartbeatEvent;
 import org.sprintdragon.ipc.server.event.enums.HeartbeatEnum;
 import org.sprintdragon.ipc.util.AbstractLivelinessMonitor;
 
 /**
  * Created by stereo on 16-8-24.
  */
-public class Liveliness extends AbstractLivelinessMonitor<Heartbeat> implements EventHandler<Event<HeartbeatEnum>>{
+public class Liveliness extends AbstractLivelinessMonitor<Heartbeat> implements EventHandler<HeartbeatEvent>{
 
     private int expireIntvl;
     private EventHandler dispatcher;
@@ -34,17 +32,7 @@ public class Liveliness extends AbstractLivelinessMonitor<Heartbeat> implements 
     }
 
     @Override
-    public synchronized void register(Heartbeat heartbeat) {
-        super.register(heartbeat);
-    }
-
-    @Override
-    public synchronized void unregister(Heartbeat heartbeat) {
-        super.unregister(heartbeat);
-    }
-
-    @Override
-    public void handle(Event<HeartbeatEnum> event) {
+    public void handle(HeartbeatEvent event) {
         HeartbeatEnum type = event.getType();
         switch (type)
         {
