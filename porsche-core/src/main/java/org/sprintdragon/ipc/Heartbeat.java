@@ -10,53 +10,46 @@ import java.util.Map;
  * Created by stereo on 16-8-15.
  */
 public class Heartbeat implements BeanMessage {
-    private String id;
+    private String client_id;
     private byte type;
-    private long clientTime;
-    private long serverTime;
+    private long client_time;
+    private long server_time;
     private Map<String,Object> attributes = new HashMap<String,Object>();
 
-    public String getId() {
-        return id;
+    public String getClient_id() {
+        return client_id;
     }
 
     public byte getType() {
         return type;
     }
 
-    public long getClientTime() {
-        return clientTime;
+    public long getClient_time() {
+        return client_time;
     }
 
-    public long getServerTime() {
-        return serverTime;
+    public long getServer_time() {
+        return server_time;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setClient_id(String client_id) {
+        this.client_id = client_id;
     }
 
     public void setType(byte type) {
         this.type = type;
     }
 
-    public void setClientTime(long clientTime) {
-        this.clientTime = clientTime;
+    public void setClient_time(long client_time) {
+        this.client_time = client_time;
     }
 
-    public void setServerTime(long serverTime) {
-        this.serverTime = serverTime;
-    }
-
-    public void setAttribute(String key,Object value){
-        attributes.put(key,value);
-    }
-    public Object getAttribute(String key){
-        return attributes.get(key);
+    public void setServer_time(long server_time) {
+        this.server_time = server_time;
     }
 
     public Map<String, Object> getAttributes() {
-        return Collections.unmodifiableMap(attributes);
+        return attributes;
     }
 
     @Override
@@ -64,11 +57,22 @@ public class Heartbeat implements BeanMessage {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Heartbeat heartbeat = (Heartbeat) o;
-        return id != null ? id.equals(heartbeat.id) : heartbeat.id == null;
+        return client_id.equals(heartbeat.client_id);
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        return client_id.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Heartbeat{" +
+                "client_id='" + client_id + '\'' +
+                ", type=" + type +
+                ", client_time=" + client_time +
+                ", server_time=" + server_time +
+                ", push_attributes=" + attributes +
+                '}';
     }
 }

@@ -1,52 +1,51 @@
-package org.sprintdragon.ipc.server;
+package org.sprintdragon.ipc.server.service;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import org.sprintdragon.ipc.server.service.AttributeStore;
+import org.sprintdragon.ipc.Packet;
 
 /**
  * Created by stereo on 16-8-17.
  */
-public class IpcContext extends AttributeStore{
-
-    private Object _msg;
+public class RequestContext{
+    private Packet _request;
     private ChannelHandlerContext _channelHandlerContext;
-    private static final ThreadLocal<IpcContext> _localContext = new ThreadLocal<IpcContext>();
+    private static final ThreadLocal<RequestContext> _localContext = new ThreadLocal<RequestContext>();
 
-    public static void begin(Object msg, ChannelHandlerContext channelHandlerContext){
-        IpcContext context = (IpcContext) _localContext.get();
+    protected static void begin(Packet _request, ChannelHandlerContext channelHandlerContext){
+        RequestContext context = (RequestContext) _localContext.get();
         if (context == null)
         {
-            context = new IpcContext();
+            context = new RequestContext();
             _localContext.set(context);
         }
-        context._msg = msg;
+        context._request = _request;
         context._channelHandlerContext = channelHandlerContext;
     }
 
-    public static void end() {
-        IpcContext context = (IpcContext) _localContext.get();
+    protected static void end() {
+        RequestContext context = (RequestContext) _localContext.get();
         if (context != null)
         {
-            context._msg = null;
+            context._request = null;
             context._channelHandlerContext = null;
             _localContext.set(null);
         }
     }
 
-    public static Object getMsg()
+    public static Packet getRequestPacket()
     {
-        IpcContext context = (IpcContext) _localContext.get();
+        RequestContext context = (RequestContext) _localContext.get();
 
         if (context != null)
-            return context._msg;
+            return context._request;
         else
             return null;
     }
 
     public static ChannelHandlerContext getChannelHandlerContext()
     {
-        IpcContext context = (IpcContext) _localContext.get();
+        RequestContext context = (RequestContext) _localContext.get();
 
         if (context != null)
             return context._channelHandlerContext;
@@ -55,7 +54,7 @@ public class IpcContext extends AttributeStore{
     }
 
     public static Channel getChannel() {
-        IpcContext context = (IpcContext) _localContext.get();
+        RequestContext context = (RequestContext) _localContext.get();
 
         if (context != null)
             return context._channelHandlerContext.channel();

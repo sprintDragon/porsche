@@ -11,6 +11,7 @@ import org.sprintdragon.ipc.Packet;
 import org.sprintdragon.ipc.server.api.*;
 import org.sprintdragon.ipc.server.event.RequestEvent;
 import org.sprintdragon.ipc.server.event.ResponseEvent;
+import org.sprintdragon.ipc.server.service.RequestContext;
 
 /**
  * Created by stereo on 16-8-9.
@@ -26,8 +27,8 @@ public class IpcHandler extends ChannelInboundHandlerAdapter implements IpcEngin
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        IpcContext.begin(msg,ctx);
-        try {
+        try
+        {
             if(msg instanceof Packet)
             {
                 final Packet packet = (Packet) msg;
@@ -43,11 +44,11 @@ public class IpcHandler extends ChannelInboundHandlerAdapter implements IpcEngin
             }
             else
                 LOG.error("IpcHandler.channelRead error msg is " + msg);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             LOG.error("IpcHandler.handle packet is " + msg + " error",e);
         }
-        IpcContext.end();
     }
 
     @Override

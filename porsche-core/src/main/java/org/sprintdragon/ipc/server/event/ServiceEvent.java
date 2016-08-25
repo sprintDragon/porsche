@@ -8,7 +8,7 @@ import org.sprintdragon.ipc.util.Time;
 /**
  * Created by stereo on 16-8-18.
  */
-public class ServiceEvent<T> implements Event<ServiceEnum>{
+public class ServiceEvent<T> implements Event<ServiceEnum> {
     private T target;
     private long timestamp;
     private ServiceEnum type;

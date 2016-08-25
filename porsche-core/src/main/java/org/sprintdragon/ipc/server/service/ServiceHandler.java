@@ -87,11 +87,18 @@ public class ServiceHandler extends AbstractService implements IServiceHandler,E
 
     @Override
     public void handleRequest(RequestEvent request) throws Exception {
-        boolean succeed = serviceInvoker.invoke(new ServiceCall(request.getTarget()));
-        if (succeed)
-            replyResponse(new ResponseEvent(request.getTarget(),request.getChannelHandlerContext()));
-        else
-            LOG.error("handleRequest failed request : " + request.getTarget());
+        RequestContext.begin(request.getTarget(),request.getChannelHandlerContext());
+        try
+        {
+            boolean succeed = serviceInvoker.invoke(new ServiceCall(request.getTarget()));
+            if (succeed)
+                replyResponse(new ResponseEvent(request.getTarget(),request.getChannelHandlerContext()));
+            else
+                LOG.error("handleRequest failed request : " + request.getTarget());
+        }
+        finally {
+            RequestContext.end();
+        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package org.ipc.test;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sprintdragon.ipc.server.service.RequestContext;
 import org.sprintdragon.ipc.server.service.Service;
 import org.sprintdragon.ipc.server.api.INotification;
 
@@ -24,7 +25,7 @@ public class TestService extends Service implements ITestService {
     }
 
     public Bean test1(Bean bean){
-        LOG.info("TestService.test1 " + bean);
+        LOG.info("TestService.test1 " + bean + " RequestContext.getChannelHandlerContext() " +  RequestContext.getChannelHandlerContext());
         return bean;
     }
 
