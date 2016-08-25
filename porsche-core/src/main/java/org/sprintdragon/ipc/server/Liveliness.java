@@ -34,9 +34,6 @@ public class Liveliness extends AbstractLivelinessMonitor<Heartbeat> {
 
     @Override
     public synchronized void register(Heartbeat ob) {
-        ChannelHandlerContext ctx = IpcContext.getChannelHandlerContext();
-
-
         super.register(ob);
     }
 

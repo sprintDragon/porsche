@@ -10,6 +10,7 @@ import org.sprintdragon.event.EventHandler;
 import org.sprintdragon.ipc.Config;
 import org.sprintdragon.ipc.Constants;
 import org.sprintdragon.ipc.server.api.*;
+import org.sprintdragon.ipc.server.event.enums.ServiceEnum;
 import org.sprintdragon.service.AbstractService;
 import org.sprintdragon.service.Service;
 import java.lang.ref.WeakReference;
@@ -52,7 +53,7 @@ public class ServiceContext extends AbstractService implements IServiceContext,
 		((Service)serviceHandler).init();
 
 		//注册业务处理器
-		dispatcher.register(Constants.ServiceEnum.class, (EventHandler) serviceHandler);
+		dispatcher.register(ServiceEnum.class, (EventHandler) serviceHandler);
 	}
 
 	@Override

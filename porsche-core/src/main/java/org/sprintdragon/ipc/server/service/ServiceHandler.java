@@ -13,6 +13,7 @@ import org.sprintdragon.ipc.server.api.IServiceHandler;
 import org.sprintdragon.ipc.server.api.IServiceInvoker;
 import org.sprintdragon.ipc.server.event.RequestEvent;
 import org.sprintdragon.ipc.server.event.ResponseEvent;
+import org.sprintdragon.ipc.server.event.enums.ServiceEnum;
 import org.sprintdragon.ipc.util.Daemon;
 import org.sprintdragon.ipc.util.ThreadPoolUtils;
 import org.sprintdragon.service.AbstractService;
@@ -22,7 +23,7 @@ import java.util.concurrent.*;
 /**
  * Created by stereo on 16-8-18.
  */
-public class ServiceHandler extends AbstractService implements IServiceHandler,EventHandler<Event<Constants.ServiceEnum>> {
+public class ServiceHandler extends AbstractService implements IServiceHandler,EventHandler<Event<ServiceEnum>> {
 
     private static Logger LOG = LoggerFactory.getLogger(ServiceHandler.class);
 
@@ -105,8 +106,8 @@ public class ServiceHandler extends AbstractService implements IServiceHandler,E
     }
 
     @Override
-    public void handle(final Event<Constants.ServiceEnum> event) {
-        Constants.ServiceEnum type = event.getType();
+    public void handle(final Event<ServiceEnum> event) {
+        ServiceEnum type = event.getType();
         switch (type)
         {
             case REQUEST:

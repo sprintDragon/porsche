@@ -2,19 +2,19 @@ package org.sprintdragon.ipc.server.event;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.sprintdragon.event.Event;
-import org.sprintdragon.ipc.Constants;
+import org.sprintdragon.ipc.server.event.enums.ServiceEnum;
 import org.sprintdragon.ipc.util.Time;
 
 /**
  * Created by stereo on 16-8-18.
  */
-public class ServiceEvent<T> implements Event<Constants.ServiceEnum>{
+public class ServiceEvent<T> implements Event<ServiceEnum>{
     private T target;
     private long timestamp;
-    private Constants.ServiceEnum type;
+    private ServiceEnum type;
     private ChannelHandlerContext channelHandlerContext;
 
-    public ServiceEvent(T target, Constants.ServiceEnum type, ChannelHandlerContext channelHandlerContext){
+    public ServiceEvent(T target, ServiceEnum type, ChannelHandlerContext channelHandlerContext){
         this.timestamp = Time.now();
         this.target = target;
         this.type = type;
@@ -22,7 +22,7 @@ public class ServiceEvent<T> implements Event<Constants.ServiceEnum>{
     }
 
     @Override
-    public Constants.ServiceEnum getType() {
+    public ServiceEnum getType() {
         return type;
     }
 
